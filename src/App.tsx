@@ -4,7 +4,9 @@ import Cabinet from "./pages/Cabinet/Cabinet";
 import Login from "./pages/Login/Login";
 import styles from "./App.module.css";
 import Logout from "./pages/Logout/Logout";
-import { StylesProvider } from "@mui/styles";
+import { GlobalStyle } from './styles/global_style';
+import {StylesProvider} from "@mui/styles";
+import Logo from "./components/Logo/Logo";
 
 interface PrivateRouteProps {
   children: ReactElement;
@@ -18,26 +20,23 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 
 function App() {
   return (
-    <StylesProvider injectFirst>
-      <div className={styles.App}>
-        <div className={styles.main_container}>
-          <div className={styles.container}>
-            <Routes>
-              <Route index={false} path="/" element={<Login />} />
-              <Route
-                path="/cabinet"
-                element={
-                  <PrivateRoute>
-                    <Cabinet />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="/logout" element={<Logout />} />
-            </Routes>
+      <>
+          <GlobalStyle/>
+    {/*// <StylesProvider injectFirst>*/}
+          <div className={styles.App}>
+              <Logo/>
+              <div className={styles.main_container}>
+                  <div className={styles.container}>
+                      <Routes>
+                          <Route index={false} path="/" element={<Login />} />
+                          <Route path="/cabinet" element={<PrivateRoute><Cabinet /></PrivateRoute>}/>
+                          <Route path="/logout" element={<Logout />} />
+                      </Routes>
+                  </div>
+              </div>
           </div>
-        </div>
-      </div>
-    </StylesProvider>
+    {/*</StylesProvider>*/}
+      </>
   );
 }
 

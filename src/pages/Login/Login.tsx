@@ -1,8 +1,9 @@
 import React from "react";
 import styles from "./Login.module.css";
-import Logo from "../../assets/logo.svg";
-import Button from "../../components/Button/Button";
+import Logo from "../../assets/bancambiosLogo.svg";
 import { useNavigate } from "react-router-dom";
+import {Typography} from "@mui/material";
+import ButtonComponent from "../../components/Button/Button";
 
 declare global {
   interface Window {
@@ -38,17 +39,20 @@ const Login = () => {
 
   return (
     <>
-      <img alt={"logo"} src={Logo} className={styles.logo} />
+      {/*<img alt={"logo"} src={Logo} className={styles.logo} />*/}
       <div className={styles.text_container}>
-        <p className={styles.text}>Are you an Elumia investor? </p>
-        <p className={styles.text_black}>
-          Connect a wallet to see your vested tokens
-        </p>
+        <Typography variant="h2" align="center">Are you an Bancambios investor?</Typography>
+        {/*<p className={styles.text}>Are you an Bancambios investor? </p>*/}
+        <Typography variant="subtitle1" align="center">Connect a wallet to see your vested tokens</Typography>
+        {/*<p className={styles.text_black}>*/}
+        {/*  Connect a wallet to see your vested tokens*/}
+        {/*</p>*/}
         <div className={styles.button_container}>
-          <Button
+          <ButtonComponent
+              type={"connect"}
             isIconVisible={true}
             onClick={handleConnectWallet}
-            title={"CONNECT PHANTOM WALLET"}
+            title={"Connect Wallet"}
           />
         </div>
       </div>
