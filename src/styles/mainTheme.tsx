@@ -2,8 +2,6 @@ import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
   typography: {
-    // fontSize: 14,
-    // fontFamily: '"Spy Agency", sans-serif',
     //styleName: H1
     h1: {
       color: "#FFFFFF",
@@ -94,17 +92,4 @@ export const theme = createTheme({
       textTransform: "none",
     },
   },
-  // palette: {
-  //   primary: {
-  //     main: '#3C94F0',
-  //     light: 'rgba(60, 148, 240, 0.12)',
-  //   },
-  //   secondary: {
-  //     main: 'rgba(0, 0, 0, 0.6)',
-  //   },
-  //   text: {},
-  //   action: {
-  //     active: 'rgba(20,30,48,0.5)',
-  //   },
-  // },
 });

@@ -13,15 +13,13 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  /*height: 100px;*/
-  justify-self: "center"
 }
 
 @media screen and (min-width: 700px) {
   .logo {
     margin-top: -50px;
   }
-  .logo_container {
+  /*.logo_container {*/
     /*height: 125px;*/
-  }
+  /*}*/
 }

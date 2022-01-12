@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "prebuild": "mv token-vesting-api .. && cd ../token-vesting-api && yarn install",
+    "prebuild": "cp token-vesting-api .. && cd ../token-vesting-api && yarn install",
     "postbuild": "npm link ../token-vesting-api",
     "build": "react-scripts build",
     "test": "react-scripts test",

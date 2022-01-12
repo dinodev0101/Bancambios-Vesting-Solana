@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@mui/material";
+import {Box, CircularProgress, Typography} from "@mui/material";
 import React from "react";
 import Button from "../Button/Button";
 import ModalWrapper from "../ModalWrapper/ModalWrapper";
@@ -27,23 +27,29 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
     <ModalWrapper
       open={open}
       handleClose={handleClose}
-      title={"Claim ELU tokens"}
+      title={"Claim BX tokens"}
     >
       {isError ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <FmdBadIcon sx={{ color: "#f7bab9", fontSize: 68 }} />
-          <Caption
-            sx={{ p: 2 }}
-            text={"Sorry, your tokens were not claimed. Try again later."}
-          />
-        </Box>
-      ) : isLoading ? (
+          <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "70px",
+              }}
+          >
+            <FmdBadIcon sx={{ color: "rgb(183,82,230)", fontSize: 90, marginBottom: "10px", }} />
+            {/*<Caption*/}
+            {/*  sx={{ p: 2 }}*/}
+            {/*  text={"Sorry, your tokens were not claimed. Try again later."}*/}
+            {/*  />*/}
+            <Typography variant={"subtitle1"} align={"center"}>
+              Sorry, your tokens were not claimed. Try again later.
+            </Typography>
+          </Box>
+
+        ) : isLoading ? (
         <Box
           sx={{
             display: "flex",
@@ -53,7 +59,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
           }}
         >
           <CircularProgress
-            style={{ color: "#1395FF" }}
+            style={{ color: "rgb(183,82,230)" }}
             thickness={6}
             size={50}
           />
@@ -78,7 +84,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
               wordWrap: "break-word",
               lineHeight: { xs: "50px" },
             }}
-            text={available + " elu"}
+            text={available + " bx"}
           />
           <Box
             sx={{

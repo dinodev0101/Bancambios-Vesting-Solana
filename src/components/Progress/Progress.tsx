@@ -59,17 +59,14 @@ const BorderLinearProgress = styled(LinearProgress)(() => ({
   height: 15,
   borderRadius: 25,
   [`&.${linearProgressClasses.colorPrimary}`]: {
-    // background: "#E1F1FF",
     background: "rgb(183,82,230)",
     boxShadow: "inset 0px 4px 4px #BAE0FF",
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 25,
-    // background: "rgba(159, 90, 229, 0.3)",
     background: "#0056FD",
     border: "1px solid",
     borderColor: "rgb(183,82,230)",
-    // background: "linear-gradient(180deg, #49ADFF 47.71%, #1395FF 50.31%)",
   },
 }));
 

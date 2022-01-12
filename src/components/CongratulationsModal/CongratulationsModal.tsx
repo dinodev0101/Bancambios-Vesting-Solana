@@ -1,14 +1,12 @@
 import {Box, Typography} from "@mui/material";
 import * as React from "react";
-import Button from "../Button/Button";
 import ModalWrapper from "../ModalWrapper/ModalWrapper";
 import Caption from "../Title/Caption";
+import ButtonComponent from "../Button/Button";
 
 interface CongratulationsModalProps {
   isOpen: boolean;
-  // title: string;
   handleClose: () => void;
-  // children: React.ReactElement;
 }
 
 const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
@@ -19,7 +17,7 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
     <ModalWrapper
       open={isOpen}
       handleClose={handleClose}
-      title={"Claim ELU tokens"}
+      title={"Claim BX tokens"}
     >
       <Box
         sx={{
@@ -32,12 +30,10 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
         }}
       >
         <Box sx={{ p: { xs: 1, md: 3 } }}>
-          {/*<Caption text={"Claimed tokens have been sent to you wallet:"} />*/}
           <Typography variant={"subtitle1"} align={"center"}>Claimed tokens have been sent to you wallet:</Typography>
           <Caption
             sx={{
               p: 1,
-              // backgroundColor: "#F2FBFF",
               backgroundColor: "#202124",
               textOverflow: "ellipsis",
               overflow: "hidden",
@@ -53,7 +49,7 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
           }}
         >
           <Box sx={{ width: "75%" }}>
-            <Button
+            <ButtonComponent
                 type={"done"}
               isIconVisible={false}
               onClick={handleClose}
