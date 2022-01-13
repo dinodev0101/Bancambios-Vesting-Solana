@@ -17,7 +17,7 @@ const HeadingStyled = styled(Typography)(() => ({
   fontSize: "24px",
   lineHeight: "35px",
   letterSpacing: "0.03em",
-  color: "#000000",
+  color: "#FFFFFF",
 }));
 
 export default Heading;

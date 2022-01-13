@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import React from "react";
 
 interface TitleProps {
   text: string;
@@ -7,11 +8,13 @@ interface TitleProps {
 }
 
 const Title: React.FC<TitleProps> = ({ text, isUpperCase = true }) => {
-  return <BlueTitle>{isUpperCase ? text.toUpperCase() : text}</BlueTitle>;
+  // return <BlueTitle>{isUpperCase ? text.toUpperCase() : text}</BlueTitle>;
+  return <Typography variant={"h3"} align={"center"}>{isUpperCase ? text.toUpperCase() : text}</Typography>;
 };
 
 const BlueTitle = styled(Typography)(() => ({
-  color: "#1395FF",
+  // color: "#1395FF",
+  color: "rgba(236, 38, 245, 1)",
   fontFamily: "Poppins",
   fontSize: "24px",
   fontWeight: "500",

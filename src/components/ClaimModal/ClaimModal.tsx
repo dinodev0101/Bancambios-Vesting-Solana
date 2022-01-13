@@ -97,6 +97,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
             />
             <Box sx={{ width: "75%" }}>
               <Button
+                  type={"claim"}
                 title={"claim ALL!"}
                 isIconVisible={false}
                 onClick={handleClaim}

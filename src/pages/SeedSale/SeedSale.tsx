@@ -9,15 +9,16 @@ import Heading from "../../components/Title/Heading";
 import moment from "moment";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
-import Button from "../../components/Button/Button";
+// import Button from "../../components/Button/Button";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
 import converterBN from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
 import BigNumber from "bignumber.js";
-import { CircularProgress } from "@mui/material";
+import {CircularProgress, Button, Typography} from "@mui/material";
 import BN from "bn.js";
+import ButtonComponent from "../../components/Button/Button";
 
 interface SeedSaleProps {
   name: string;
@@ -158,7 +159,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           })
           .catch((error: Error) => {
             if (error.message.includes("Vesting Account does not exist")) {
-              setError(true);
+              // setError(true);
             }
             console.log("getVestingStatistic error === ", error);
           });
@@ -436,19 +437,28 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           </Box>
         </Box>
         <Box sx={sxStyles.buttonContainer}>
-          <Box sx={{ width: { md: "30%", xs: "90%" } }}>
-            <Button
-              title="Claim!"
-              disable={available === "0"}
-              isIconVisible={false}
-              onClick={handleClickOpen}
+          {/*<Box sx={{ width: { md: "30%", xs: "90%" } }}>*/}
+            <ButtonComponent
+                type={"claim"}
+                title={"Claim!"}
+                onClick={handleClickOpen}
+                // disable={available === "0"}
+                isIconVisible={false}
             />
-          </Box>
+          {/*    <Button sx={sxStyles.buttonClaim} variant="contained">CLAIM</Button>*/}
+            {/*<Button*/}
+            {/*  title="Claim!"*/}
+            {/*  disable={available === "0"}*/}
+            {/*  isIconVisible={false}*/}
+            {/*  onClick={handleClickOpen}*/}
+            {/*/>*/}
+          {/*</Box>*/}
         </Box>
       </Box>
       <Box
         sx={{
-          backgroundColor: "#F2FBFF",
+          // backgroundColor: "rgb(26, 27, 28)",
+          color: "#FFFFFF",
           width: "100%",
           display: "flex",
           alignItems: "center",
@@ -491,12 +501,36 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
 
 const sxStyles = {
   buttonContainer: {
-    display: "flex",
+    height: "fit-content",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
     mb: { xs: 0, md: 1 },
   },
+    // buttonClaim: {
+    //   width: "433.79px",
+    //     height: "64px",
+    //     background: "rgba(159, 90, 229, 0.3)",
+    //     // borderRadius: "36px",
+    //     border: "3px solid",
+    //     // borderColor: "rgb(183,82,230)",
+    //     borderImage: "linear-gradient(180deg, #b3f000, #00ed20, #09ff80, #00d5aa)",
+    //     borderImageSlice: "1",
+    //     "&:before":{},
+    //
+    //     "&:hover": {
+    //         border: "none",
+    //         borderColor: "rgb(183,82,230)",
+    //         background: "linear-gradient(266.19deg, #EC26F5 -9.56%, #9F5AE5 102.3%)",
+    //         boxShadow: "0px 0px 16px #9F5AE5",
+    //     },
+    //     // borderImageSource: "linear-gradient(86.05deg, #F337F8 -19.34%, #9F5AE5 110.66%)",
+    //     // borderColor: "#9F5AE5",
+    //     // borderImageSource: "linear-gradient(to left, #743ad5, #d53a9d)",
+    //     // border: 10px solid;
+    //     // borderImageSlice: "1",
+    //     // background: linear-gradient(266.19deg, #EC26F5 -9.56%, #9F5AE5 102.3%);
+    //     },
   tab: {
     maxHeight: "40px",
     textTransform: "none",
@@ -509,10 +543,10 @@ const sxStyles = {
     fontSize: { xs: 14, md: 16 },
     height: 40,
     minHeight: 40,
-    minWidth: "auto",
+    // minWidth: "auto",
     "&.Mui-selected": {
       backgroundColor: "#1395ff",
-      color: "#fff!important",
+      // color: "#fff!important",
       fontWeight: "bold",
       height: 40,
       minHeight: 40,
@@ -527,7 +561,8 @@ const sxStyles = {
     flexDirection: "column",
   },
   contractAddress: {
-    color: "rgba(19, 149, 255, 1)",
+    // color: "rgba(19, 149, 255, 1)",
+    // color: "#FFFFFF",
     paddingX: 1,
     overflow: "hidden",
     whiteSpace: "nowrap",

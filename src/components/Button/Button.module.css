@@ -1,29 +1,42 @@
 .button_container {
-  cursor: pointer;
+  /*height: 64px;*/
+  /*width: 434px;*/
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 8px 16px;
+  /*background: rgba(1, 86, 255, 0.3);*/
+  /*border-radius: 36px;*/
+  /*border: 3px solid rgb(102, 73, 243);*/
+  /*border-image-source: linear-gradient(86.05deg, #F337F8 -19.34%, #0156FF 110.66%);*/
+  /*background: #fff;*/
 
-  background: linear-gradient(180deg, #49adff 52.39%, #1395ff 52.4%);
-  border-radius: 4px;
-  height: 56px;
+  /*cursor: pointer;*/
+  /*display: flex;*/
+  /*flex-direction: row;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
+  /*padding: 8px 16px;*/
+
+  /*background: linear-gradient(180deg, #49adff 52.39%, #1395ff 52.4%);*/
+  /*border-radius: 4px;*/
+  /*height: 56px;*/
 }
 
-.button_disable_container {
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 16px;
-  background: rgba(211, 211, 211, 1);
-  border-radius: 4px;
-  height: 56px;
-  pointer-events: none;
-  cursor: not-allowed;
-}
+/*.button_disable_container {*/
+/*  !*cursor: pointer;*!*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  padding: 8px 16px;*/
+/*  color: #ffffff;*/
+/*  !*background: rgba(211, 211, 211, 1);*!*/
+/*  border-radius: 4px;*/
+/*  height: 56px;*/
+/*  pointer-events: none;*/
+/*  cursor: not-allowed;*/
+/*}*/
 
 .button_text {
   font-family: PT Sans;
