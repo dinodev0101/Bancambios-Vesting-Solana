@@ -158,7 +158,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           })
           .catch((error: Error) => {
             if (error.message.includes("Vesting Account does not exist")) {
-              // setError(true);
+              setError(true);
             }
             console.log("getVestingStatistic error === ", error);
           });
