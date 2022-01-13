@@ -36,6 +36,7 @@ const Cabinet = () => {
 
   const handleDisconnectWallet = () => {
     window.solana.disconnect();
+    localStorage.removeItem("publicKey");
     navigate("/");
   };
 
