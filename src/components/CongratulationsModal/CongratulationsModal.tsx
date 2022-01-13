@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import * as React from "react";
 import Button from "../Button/Button";
 import ModalWrapper from "../ModalWrapper/ModalWrapper";
@@ -32,11 +32,13 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
         }}
       >
         <Box sx={{ p: { xs: 1, md: 3 } }}>
-          <Caption text={"Claimed tokens have been sent to you wallet:"} />
+          {/*<Caption text={"Claimed tokens have been sent to you wallet:"} />*/}
+          <Typography variant={"subtitle1"} align={"center"}>Claimed tokens have been sent to you wallet:</Typography>
           <Caption
             sx={{
               p: 1,
-              backgroundColor: "#F2FBFF",
+              // backgroundColor: "#F2FBFF",
+              backgroundColor: "#202124",
               textOverflow: "ellipsis",
               overflow: "hidden",
             }}
@@ -52,6 +54,7 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
         >
           <Box sx={{ width: "75%" }}>
             <Button
+                type={"done"}
               isIconVisible={false}
               onClick={handleClose}
               title={"Done"}

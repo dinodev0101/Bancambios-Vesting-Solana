@@ -1,4 +1,6 @@
 .logo {
+  /*width: 305px;*/
+  /*height: 218px;*/
   position: absolute;
   max-height: 150px;
   max-width: 200px;
@@ -11,7 +13,7 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  height: 100px;
+  /*height: 100px;*/
   justify-self: "center"
 }
 
@@ -20,6 +22,6 @@
     margin-top: -50px;
   }
   .logo_container {
-    height: 125px;
+    /*height: 125px;*/
   }
 }

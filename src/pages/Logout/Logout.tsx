@@ -25,7 +25,7 @@ const Logout = () => {
       <img alt={"logo"} src={Logo} className={styles.logo} />
       <div className={styles.text_container}>
         <p className={styles.text_black}>
-          Sorry, it looks like you’re not an Elumia investor.
+          Sorry, it looks like you’re not an Bancambios investor.
           <br />
           Try to connect another wallet to see your vested tokens
         </p>
@@ -38,6 +38,7 @@ const Logout = () => {
         </div>
         <div className={styles.button_container}>
           <Button
+              type={"disconnect"}
             isIconVisible={false}
             onClick={handleDisconnectWallet}
             title={"Disconnect wallet"}

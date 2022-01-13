@@ -4,11 +4,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { DialogContent } from "@mui/material";
+import {DialogContent, Typography} from "@mui/material";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
+      background: "#35363A",
   },
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
@@ -28,12 +29,15 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
     <DialogTitle
       sx={{
         m: 0,
-        p: 4,
-        fontFamily: "Poppins",
-        fontSize: "24px",
-        fontWeight: "500",
-        lineHeight: "35px",
-        letterSpacing: "0.03em",
+        padding: "16px 16px 16px 16px",
+          alignItems: "center",
+          background: "#35363A",
+          // color:
+        // fontFamily: "Poppins",
+        // fontSize: "24px",
+        // fontWeight: "500",
+        // lineHeight: "35px",
+        // letterSpacing: "0.03em",
       }}
     >
       {children}
@@ -43,9 +47,9 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
           onClick={onClose}
           sx={{
             position: "absolute",
-            right: 30,
-            top: 30,
-            color: "#000",
+            right: 10,
+            top: 10,
+            color: "#FFFFFF",
           }}
         >
           <CloseIcon />
@@ -84,7 +88,7 @@ const ModalWrapper: React.FC<CustomizedDialogsProps> = ({
           id="customized-dialog-title"
           onClose={handleClose}
         >
-          {title}
+            <Typography variant={"h2"} align={"center"}>{title}</Typography>
         </BootstrapDialogTitle>
         <DialogContent
           sx={{
