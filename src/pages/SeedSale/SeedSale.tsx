@@ -9,7 +9,6 @@ import Heading from "../../components/Title/Heading";
 import moment from "moment";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
-// import Button from "../../components/Button/Button";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
 import converterBN from "../../utils";
@@ -253,7 +252,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         }}
       >
         <CircularProgress
-          style={{ color: "#1395FF" }}
+          style={{ color: "rgb(183,82,230)" }}
           thickness={6}
           size={50}
         />
@@ -328,8 +327,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                       .multipliedBy(
                         vestingType?.vesting_schedule?.initial_unlock
                       )
-                      .toString()} ELU`
-                  : "0 ELU"
+                      .toString()} BX`
+                  : "0 B"
               }
             />
             <Caption text={"Tokens released on Token Generation Event"} />
@@ -341,8 +340,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         </Box>
         <LinearProgressWithLabel
           value={new BigNumber(total).dividedBy(released).toString()}
-          topText={released + " ELU"}
-          topStickyText={total + " ELU"}
+          topText={released + " BX"}
+          topStickyText={total + " BX"}
           bottomText={moment(new Date()).format("L")} //current time
           bottomStickyText={
             vestingType &&
@@ -382,7 +381,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
               <Caption text={"Total Tokens Vested"} />
               <Heading
                 sx={{ textAlign: { xs: "center" } }}
-                text={total + " ELU"}
+                text={total + " BX"}
               />
             </Container>
             <Container
@@ -394,7 +393,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
             >
               <Caption text={"Tokens Released"} />
               <Heading
-                text={released + " ELU"}
+                text={released + " BX"}
                 sx={{ textAlign: { xs: "center" } }}
               />
             </Container>
@@ -418,7 +417,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
               <Caption text={"Tokens Claimed"} />
               <Heading
                 sx={{ textAlign: { xs: "center" } }}
-                text={claimed + " ELU"}
+                text={claimed + " BX"}
               />
             </Container>
             <Container
@@ -431,13 +430,12 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
               <Caption text={"Tokens Available to Claim"} />
               <Heading
                 sx={{ textAlign: { xs: "center" } }}
-                text={available + " ELU"}
+                text={available + " BX"}
               />
             </Container>
           </Box>
         </Box>
         <Box sx={sxStyles.buttonContainer}>
-          {/*<Box sx={{ width: { md: "30%", xs: "90%" } }}>*/}
             <ButtonComponent
                 type={"claim"}
                 title={"Claim!"}
@@ -445,19 +443,10 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 // disable={available === "0"}
                 isIconVisible={false}
             />
-          {/*    <Button sx={sxStyles.buttonClaim} variant="contained">CLAIM</Button>*/}
-            {/*<Button*/}
-            {/*  title="Claim!"*/}
-            {/*  disable={available === "0"}*/}
-            {/*  isIconVisible={false}*/}
-            {/*  onClick={handleClickOpen}*/}
-            {/*/>*/}
-          {/*</Box>*/}
         </Box>
       </Box>
       <Box
         sx={{
-          // backgroundColor: "rgb(26, 27, 28)",
           color: "#FFFFFF",
           width: "100%",
           display: "flex",
@@ -546,28 +535,24 @@ const sxStyles = {
     // minWidth: "auto",
     "&.Mui-selected": {
       backgroundColor: "#1395ff",
-      // color: "#fff!important",
       fontWeight: "bold",
       height: 40,
       minHeight: 40,
     },
   },
-  tabsContainer: {
-    borderBottom: 1,
-    borderColor: "divider",
-    height: "40px",
-    minHeight: "40px",
-    display: "flex",
-    flexDirection: "column",
-  },
+  // tabsContainer: {
+  //   borderBottom: 1,
+  //   borderColor: "divider",
+  //   height: "40px",
+  //   minHeight: "40px",
+  //   display: "flex",
+  //   flexDirection: "column",
+  // },
   contractAddress: {
-    // color: "rgba(19, 149, 255, 1)",
-    // color: "#FFFFFF",
     paddingX: 1,
     overflow: "hidden",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
-    // maxWidth: "50%",
   },
 } as const;
 

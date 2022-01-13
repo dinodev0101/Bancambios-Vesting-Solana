@@ -19,8 +19,6 @@ const StyledBox = styled(Box)(() => ({
   padding: "16px",
   border: "0.5px solid #DBDBDB",
   borderRadius: "4px",
-  // maxWidth: "160px",
-  // width: "160px",
 }));
 
 export default Container;

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Logout.module.css";
-import Logo from "../../assets/logo.svg";
 import Button from "../../components/Button/Button";
 import { useNavigate } from "react-router";
+import {Typography} from "@mui/material";
+import Caption from "../../components/Title/Caption";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -22,19 +23,19 @@ const Logout = () => {
 
   return (
     <>
-      <img alt={"logo"} src={Logo} className={styles.logo} />
       <div className={styles.text_container}>
-        <p className={styles.text_black}>
-          Sorry, it looks like you’re not an Bancambios investor.
-          <br />
-          Try to connect another wallet to see your vested tokens
-        </p>
+        <Typography variant="h2" align="center">Sorry, it looks like you’re not an Bancambios investor.</Typography>
+        <Typography variant="subtitle1" align="center"> Try to connect another wallet to see your vested tokens</Typography>
         <div className={styles.wallet_container}>
-          <div className={styles.wallet_address}>
-            <p className={styles.address}>
-              {newWalletKey}
-            </p>
-          </div>
+            <Caption
+                sx={{
+                  p: 1,
+                  backgroundColor: "#202124",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                }}
+                text={newWalletKey!}
+            />
         </div>
         <div className={styles.button_container}>
           <Button

@@ -5,7 +5,6 @@ import Login from "./pages/Login/Login";
 import styles from "./App.module.css";
 import Logout from "./pages/Logout/Logout";
 import { GlobalStyle } from './styles/global_style';
-import {StylesProvider} from "@mui/styles";
 import Logo from "./components/Logo/Logo";
 
 interface PrivateRouteProps {
@@ -22,7 +21,6 @@ function App() {
   return (
       <>
           <GlobalStyle/>
-    {/*// <StylesProvider injectFirst>*/}
           <div className={styles.App}>
               <Logo/>
               <div className={styles.main_container}>
@@ -35,7 +33,6 @@ function App() {
                   </div>
               </div>
           </div>
-    {/*</StylesProvider>*/}
       </>
   );
 }

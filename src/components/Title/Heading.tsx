@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
-import { styled, SxProps } from "@mui/material/styles";
+import { SxProps } from "@mui/material/styles";
+import React from "react";
 
 interface TitleProps {
   text: string;
@@ -7,17 +8,7 @@ interface TitleProps {
 }
 
 const Heading: React.FC<TitleProps> = ({ text, sx }) => {
-  return <HeadingStyled sx={sx}>{text.toUpperCase()}</HeadingStyled>;
+  return <Typography variant={"h3"} align={"center"}>{text.toUpperCase()}</Typography>;
 };
-
-const HeadingStyled = styled(Typography)(() => ({
-  fontFamily: "Poppins",
-  fontStyle: "normal",
-  fontWeight: "500",
-  fontSize: "24px",
-  lineHeight: "35px",
-  letterSpacing: "0.03em",
-  color: "#FFFFFF",
-}));
 
 export default Heading;
