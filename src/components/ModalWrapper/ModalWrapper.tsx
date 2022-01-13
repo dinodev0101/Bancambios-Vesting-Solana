@@ -32,12 +32,6 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
         padding: "16px 16px 16px 16px",
           alignItems: "center",
           background: "#35363A",
-          // color:
-        // fontFamily: "Poppins",
-        // fontSize: "24px",
-        // fontWeight: "500",
-        // lineHeight: "35px",
-        // letterSpacing: "0.03em",
       }}
     >
       {children}
