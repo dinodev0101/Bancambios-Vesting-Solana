@@ -10,6 +10,41 @@ interface TabPanelProps {
   value: number;
 }
 
+const vestingTypes = [
+  {
+    label: "Strategic",
+    name: "seed",
+  },
+  {
+    label: "Pre-Sale",
+    name: "seed",
+  },
+  {
+    label: "IDO",
+    name: "seed",
+  },
+  {
+    label: "Community",
+    name: "seed",
+  },
+  {
+    label: "Liquidity",
+    name: "seed",
+  },
+  {
+    label: "Advisors",
+    name: "seed",
+  },
+  {
+    label: "Team",
+    name: "seed",
+  },
+  {
+    label: "BX DAO",
+    name: "seed",
+  },
+]
+
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -19,6 +54,7 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{ height: "100%" }}
       {...other}
     >
       {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
@@ -41,7 +77,7 @@ const Cabinet = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", width: "100%"}}>
+    <Box sx={{ display: "flex", flexDirection: "column", width: "100%", }}>
       <Box
         sx={{
           display: "flex",
@@ -65,7 +101,7 @@ const Cabinet = () => {
           />
         </Box>
       </Box>
-      <Box sx={{ width: "100%", padding: { xs: 0, md: 0 } }}>
+      <Box sx={{ width: "100%", padding: { xs: 0, md: 0 }, minHeight: "454px" }}>
         <Box
           sx={{
             width: "100%",
@@ -86,39 +122,37 @@ const Cabinet = () => {
             variant="scrollable"
             allowScrollButtonsMobile
             scrollButtons="auto"
-            // sx={sxStyles.tabsContainer}
           >
-            <Tab disableRipple sx={sxStyles.tab} label="Seed Sale" />
-            <Tab disableRipple sx={sxStyles.tab} label="Strategic" />
-            <Tab disableRipple sx={sxStyles.tab} label="Private" />
-            <Tab disableRipple sx={sxStyles.tab} label="Public" />
-            <Tab disableRipple sx={sxStyles.tab} label="Seed Sale" />
-            <Tab disableRipple sx={sxStyles.tab} label="Seed Sale" />
-            <Tab disableRipple sx={sxStyles.tab} label="Seed Sale" />
+            {vestingTypes.map((type,index) => (
+              <Tab key={index} disableRipple sx={sxStyles.tab} label={type.label} />
+            ))}
           </Tabs>
           {/*<Divider />*/}
         </Box>
-        <Box sx={{ minHeight: "300px", paddingX: { xs: 1, lg: 0 } }}>
+        <Box sx={{ minHeight: "414px", paddingX: { xs: 1, lg: 0 } }}>
           <TabPanel index={0} value={value}>
-            <SeedSale name={"seed"} />
+            <SeedSale name={vestingTypes[0].name} />
           </TabPanel>
           <TabPanel index={1} value={value}>
-            <SeedSale name={"strategic"} />
+            <SeedSale name={vestingTypes[1].name} />
           </TabPanel>
           <TabPanel index={2} value={value}>
-            <SeedSale name={"private"} />
+            <SeedSale name={vestingTypes[2].name} />
           </TabPanel>
           <TabPanel index={3} value={value}>
-            <SeedSale name={"public"} />
+            <SeedSale name={vestingTypes[3].name} />
           </TabPanel>
           <TabPanel index={4} value={value}>
-            <SeedSale name={"public"} />
+            <SeedSale name={vestingTypes[4].name} />
           </TabPanel>
           <TabPanel index={5} value={value}>
-            <SeedSale name={"public"} />
+            <SeedSale name={vestingTypes[5].name} />
           </TabPanel>
           <TabPanel index={6} value={value}>
-            <SeedSale name={"public"} />
+            <SeedSale name={vestingTypes[6].name} />
+          </TabPanel>
+          <TabPanel index={7} value={value}>
+            <SeedSale name={vestingTypes[7].name} />
           </TabPanel>
         </Box>
       </Box>
@@ -148,16 +182,6 @@ const sxStyles = {
       minHeight: 40,
     },
   },
-  // tabsContainer: {
-    // borderBottom: 1,
-    // borderColor: "divider",
-    // borderColor: "#FFFFFF",
-    // width: "fit-content",
-    // height: "45px",
-    // minHeight: "45px",
-    // display: "flex",
-    // flexDirection: "column",
-  // },
 } as const;
 
 export default Cabinet;
