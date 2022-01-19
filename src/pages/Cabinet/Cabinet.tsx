@@ -154,9 +154,19 @@ const Cabinet = () => {
           <TabPanel index={7} value={value}>
             <SeedSale name={vestingTypes[7].name} />
           </TabPanel>
+          <TabPanel index={4} value={value}>
+            <SeedSale name={"public"} />
+          </TabPanel>
+          <TabPanel index={5} value={value}>
+            <SeedSale name={"public"} />
+          </TabPanel>
+          <TabPanel index={6} value={value}>
+            <SeedSale name={"public"} />
+          </TabPanel>
         </Box>
       </Box>
     </Box>
+        // </div>
   );
 };
 

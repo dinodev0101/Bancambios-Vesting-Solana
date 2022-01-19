@@ -44,7 +44,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
               Sorry, your tokens were not claimed. Try again later.
             </Typography>
           </Box>
-
         ) : isLoading ? (
         <Box
           sx={{

@@ -8,7 +8,6 @@
   justify-content: center;
   align-items: center;
 }
-
 .button_disable_container {
   height: 64px;
   width: 100%;
@@ -20,7 +19,6 @@
   align-items: center;
   cursor: not-allowed;
 }
-
 .icon {
   /* padding: 12px 0 12px 16px; */
   padding-right: 16px;

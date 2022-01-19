@@ -62,7 +62,6 @@ const ClaimButton = styled(Button)(({ theme }) => ({
     borderRadius: "36px",
     border: "3px solid",
     borderColor: "rgb(183,82,230)",
-    pointerEvents: "none",
     "&:hover": {
         border: "none",
         borderColor: "rgb(183,82,230)",
