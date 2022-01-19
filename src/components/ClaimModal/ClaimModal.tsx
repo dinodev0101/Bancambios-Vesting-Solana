@@ -40,10 +40,6 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
               }}
           >
             <FmdBadIcon sx={{ color: "rgb(183,82,230)", fontSize: 90, marginBottom: "10px", }} />
-            {/*<Caption*/}
-            {/*  sx={{ p: 2 }}*/}
-            {/*  text={"Sorry, your tokens were not claimed. Try again later."}*/}
-            {/*  />*/}
             <Typography variant={"subtitle1"} align={"center"}>
               Sorry, your tokens were not claimed. Try again later.
             </Typography>

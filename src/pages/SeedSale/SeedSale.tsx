@@ -15,7 +15,7 @@ import converterBN from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
 import BigNumber from "bignumber.js";
-import { CircularProgress } from "@mui/material";
+import {CircularProgress, Typography} from "@mui/material";
 import BN from "bn.js";
 import ButtonComponent from "../../components/Button/Button";
 
@@ -158,7 +158,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           })
           .catch((error: Error) => {
             if (error.message.includes("Vesting Account does not exist")) {
-              // setError(true);
+              setError(true);
             }
             console.log("getVestingStatistic error === ", error);
           });
@@ -247,7 +247,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "300px",
+          height: "100%",
+          minHeight: "414px",
           flexDirection: "column",
         }}
       >
@@ -268,7 +269,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "300px",
+          height: "100%",
+          minHeight: "414px",
         }}
       >
         <BlueTitle
@@ -440,7 +442,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 type={"claim"}
                 title={"Claim!"}
                 onClick={handleClickOpen}
-                // disable={available === "0"}
+                disable={available === "0"}
                 isIconVisible={false}
             />
         </Box>
@@ -462,26 +464,47 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
       >
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
             width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
-          <Caption
-            sx={{ width: { xs: "100%", md: "max-content" } }}
-            text={"Program address:"}
-          />
-          <Caption sx={sxStyles.contractAddress} text={pubKey} />
+            <Typography
+                variant={"body2"}
+                textAlign={"center"}
+            >
+                Program address:
+            </Typography>
+            <Typography
+                variant={"body2"}
+                textAlign={"center"}
+                sx={{marginLeft: "8px", opacity: "0.75"}}
+            >
+                {pubKey}
+            </Typography>
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-          <Caption
-            sx={{ width: { xs: "100%", md: "max-content" } }}
-            text={"Tokens are vested to:"}
-          />
-          <Caption
-            sx={sxStyles.contractAddress}
-            text={newWalletKey?.toString() ?? ""}
-          />
+        <Box sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
+        }}>
+            <Typography
+                variant={"body2"}
+                textAlign={"center"}
+            >
+                Tokens are vested to:
+            </Typography>
+            <Typography
+                variant={"body2"}
+                textAlign={"center"}
+                sx={{marginLeft: "8px", opacity: "0.75" }}
+            >
+                {newWalletKey?.toString() ?? ""}
+            </Typography>
         </Box>
       </Box>
     </>
@@ -492,43 +515,10 @@ const sxStyles = {
   buttonContainer: {
     height: "fit-content",
     width: "100%",
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     mb: { xs: 0, md: 1 },
-  },
-  tab: {
-    maxHeight: "40px",
-    textTransform: "none",
-    border: "1px solid #D3D3D3",
-    borderBottom: 0,
-    boxSizing: "border-box",
-    borderRadius: "4px 4px 0px 0px",
-    margin: "0 4px",
-    padding: 1,
-    fontSize: { xs: 14, md: 16 },
-    height: 40,
-    minHeight: 40,
-    // minWidth: "auto",
-    "&.Mui-selected": {
-      backgroundColor: "#1395ff",
-      fontWeight: "bold",
-      height: 40,
-      minHeight: 40,
-    },
-  },
-  // tabsContainer: {
-  //   borderBottom: 1,
-  //   borderColor: "divider",
-  //   height: "40px",
-  //   minHeight: "40px",
-  //   display: "flex",
-  //   flexDirection: "column",
-  // },
-  contractAddress: {
-    paddingX: 1,
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
   },
 } as const;
 

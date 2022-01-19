@@ -62,11 +62,16 @@ const ClaimButton = styled(Button)(({ theme }) => ({
     borderRadius: "36px",
     border: "3px solid",
     borderColor: "rgb(183,82,230)",
+    pointerEvents: "none",
     "&:hover": {
         border: "none",
         borderColor: "rgb(183,82,230)",
         background: "linear-gradient(266.19deg, #EC26F5 -9.56%, #9F5AE5 102.3%)",
         boxShadow: "0px 0px 16px #9F5AE5",
+    },
+    "&:disabled": {
+        color: "#FFFFFF",
+        opacity: "0.5",
     },
 }));
 
@@ -109,7 +114,7 @@ const ButtonComponent: FC<ButtonProps> = ({
     }
 
   return (
-      <div className={styles.button_container}>
+      <div className={disable ? styles.button_disable_container : styles.button_container}>
         <StyledButton onClick={onClick} disabled={disable}>
             {isIconVisible && (
                 <img alt={"icon"} src={PhantomIcon} className={styles.icon} />

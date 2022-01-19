@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Login.module.css";
 import { useNavigate } from "react-router-dom";
-import {Typography} from "@mui/material";
+import { Typography } from "@mui/material";
 import ButtonComponent from "../../components/Button/Button";
 
 declare global {
