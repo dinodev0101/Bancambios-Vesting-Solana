@@ -13,7 +13,7 @@ interface TabPanelProps {
 const vestingTypes = [
   {
     label: "Strategic",
-    name: "strategic",
+    name: "strategic-partners",
   },
   {
     label: "Pre-Sale",
@@ -33,15 +33,11 @@ const vestingTypes = [
   },
   {
     label: "Advisors",
-    name: "seed",
+    name: "advisors-partners",
   },
   {
     label: "Team",
-    name: "seed",
-  },
-  {
-    label: "BX DAO",
-    name: "seed",
+    name: "team-operations-developers",
   },
 ]
 
@@ -150,9 +146,6 @@ const Cabinet = () => {
           </TabPanel>
           <TabPanel index={6} value={value}>
             <SeedSale name={vestingTypes[6].name} />
-          </TabPanel>
-          <TabPanel index={7} value={value}>
-            <SeedSale name={vestingTypes[7].name} />
           </TabPanel>
         </Box>
       </Box>
