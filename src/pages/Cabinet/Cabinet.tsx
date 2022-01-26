@@ -13,23 +13,23 @@ interface TabPanelProps {
 const vestingTypes = [
   {
     label: "Strategic",
-    name: "seed",
+    name: "strategic",
   },
   {
     label: "Pre-Sale",
-    name: "seed",
+    name: "pre-sale",
   },
   {
     label: "IDO",
-    name: "seed",
+    name: "ido",
   },
   {
     label: "Community",
-    name: "seed",
+    name: "community-dev-marketing",
   },
   {
     label: "Liquidity",
-    name: "seed",
+    name: "liquidity-mining",
   },
   {
     label: "Advisors",
@@ -117,7 +117,7 @@ const Cabinet = () => {
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
-            centered
+            // centered
             indicatorColor={"secondary"}
             variant="scrollable"
             allowScrollButtonsMobile
@@ -153,15 +153,6 @@ const Cabinet = () => {
           </TabPanel>
           <TabPanel index={7} value={value}>
             <SeedSale name={vestingTypes[7].name} />
-          </TabPanel>
-          <TabPanel index={4} value={value}>
-            <SeedSale name={"public"} />
-          </TabPanel>
-          <TabPanel index={5} value={value}>
-            <SeedSale name={"public"} />
-          </TabPanel>
-          <TabPanel index={6} value={value}>
-            <SeedSale name={"public"} />
           </TabPanel>
         </Box>
       </Box>

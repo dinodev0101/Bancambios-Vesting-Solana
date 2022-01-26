@@ -18,14 +18,12 @@ const Login = () => {
       window?.solana && window?.solana?.isPhantom;
 
     if (isPhantomInstalled) {
-      console.log(isPhantomInstalled, "isPhantomInstalled");
       try {
         const resp = await window.solana.connect();
         const publicKey = resp.publicKey.toString();
         if (publicKey) {
           localStorage.setItem("publicKey", publicKey);
           navigate("/cabinet", { state: { publicKey } });
-          console.log(window.solana.isConnected);
         }
       } catch (err) {
         handleConnectWallet();

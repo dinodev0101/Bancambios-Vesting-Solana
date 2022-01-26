@@ -82,13 +82,13 @@ const ModalWrapper: React.FC<CustomizedDialogsProps> = ({
           id="customized-dialog-title"
           onClose={handleClose}
         >
-            <Typography variant={"h2"} align={"center"}>{title}</Typography>
+            <div><Typography variant={"h2"} align={"center"}>{title}</Typography></div>
         </BootstrapDialogTitle>
         <DialogContent
           sx={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            // alignItems: "center",
           }}
         >
           {children}

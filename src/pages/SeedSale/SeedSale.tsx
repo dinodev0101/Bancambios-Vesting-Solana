@@ -1,5 +1,7 @@
+import React, { useEffect, useState} from "react";
 import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import {CircularProgress, Typography, IconButton} from "@mui/material";
+import HelpIcon from '@mui/icons-material/Help';
 import { VestingTypeAccount } from "token-vesting-api/dist/models";
 import Container from "../../components/Container/Container";
 import LinearProgressWithLabel from "../../components/Progress/Progress";
@@ -11,13 +13,12 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
-import converterBN from "../../utils";
+import {converterBN, getNextUnlockDate, getAllUnlocks} from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
-import BigNumber from "bignumber.js";
-import {CircularProgress, Typography} from "@mui/material";
 import BN from "bn.js";
 import ButtonComponent from "../../components/Button/Button";
+import UnlockTokensModal from "../../components/UnlockTokensModal/UnlockTokensModal";
 
 interface SeedSaleProps {
   name: string;
@@ -31,9 +32,9 @@ interface IValues {
 }
 
 const network: string = "https://api.devnet.solana.com";
-const pubKey: string = "GFiTCRwUgCynpodh6cCE8GA4RQNSbKHTVHD1sEZPPDJy";
-const mint: string = "7dtmKP7NQ9p2vuHAsPbyeBL1Hws7d4tWszwC8KB9jXxe";
-const creator: string = "67WdZBU8mUC8HWN3cdjVjWftGrmVAfjuFxvjj5tiDorB";
+const pubKey: string = "7Cn64G2NPUakdjupVDhPTNQWPfiMzJd4DMvPsuDBG3yX";
+const mint: string = "38NgALrBo6yjRaSuJNgjyDYmtgSaxZbxbZaYRVtiC8fB";
+const creator: string = "7rErqb9hBGzb5jTBHFoJyigxf6DQ3GqCG5seMEmbDT8q";
 
 const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [values, setValues] = useState<IValues>({
@@ -45,57 +46,30 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [newWalletKey, setNewWalletKey] = useState<PublicKey>();
   const [connection, setConnection] = useState<Connection>();
   const [token, setToken] = useState<TokenVesting>();
-
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenUnlocks, setIsOpenUnlocks] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<VestingStatistic>();
   const [vestingType, setVestingType] = useState<VestingTypeAccount>();
-  const [cliffTime, setCliffTime] = useState<string>("00:00:00");
+  const [nextUnlockDate, setNextUnlockDate] = useState<string>("0");
+  const [allUnlocks, setAllUnlocks] = useState<Array<{date: string, tokens: string}>>([{date: "", tokens: ""}]);
+
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (
-        vestingType &&
-        vestingType.vesting_schedule &&
-        vestingType.vesting_schedule.cliff
-      ) {
-        const now = new BN(moment().unix());
-        const secondsInHour = new BN(3600);
-        const hh = vestingType.vesting_schedule.cliff
-          .sub(now)
-          .divn(3600)
-          .toString();
-        const mm = vestingType.vesting_schedule.cliff
-          .sub(now)
-          .mod(secondsInHour)
-          .divn(60)
-          .toString();
-
-        const ss = vestingType.vesting_schedule.cliff
-          .sub(now)
-          .mod(secondsInHour)
-          .modn(60)
-          .toString();
-
-        const formatter = (str: string): string =>
-          vestingType?.vesting_schedule?.cliff
-            .sub(new BN(moment().unix()))
-            .gtn(0)
-            ? `${str.length < 2 ? "0" + str : str}`
-            : "00";
-
-        setCliffTime(`${formatter(hh)}:${formatter(mm)}:${formatter(ss)}`);
+      if (vestingType && data) {
+          setNextUnlockDate(moment
+              .unix(+getNextUnlockDate(
+                  new BN(new Date().getTime() / 1000), vestingType?.vesting_schedule!)
+              )
+              .format("L"));
+          setAllUnlocks(getAllUnlocks(vestingType?.vesting_schedule!, data.allTokens!))
       }
-    }, 1000);
+  }, [vestingType, data])
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [vestingType]);
 
   useEffect(() => {
     const newWalletKey = localStorage.getItem("publicKey");
@@ -116,7 +90,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const connectSolana = async () => {
     try {
       if (window.solana) {
-        const key = await window.solana.connect({ onlyIfTrusted: true });
+        const key = await window.solana.connect();
         setNewWalletKey(new PublicKey(key.publicKey.toString()));
       }
     } catch (error) {
@@ -124,12 +98,64 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
     }
   };
 
+  const claimTransaction = () => {
+      newWalletKey &&
+      connection &&
+      token &&
+      data &&
+      data.availableToWithdrawTokens &&
+      token
+          .withdrawFromVesting(
+              newWalletKey,
+              new WithdrawFromVestingInstruction(data.availableToWithdrawTokens)
+          )
+          .then((transaction) => {
+              console.log("withdrawFromVesting", transaction);
+              connection
+                  .getRecentBlockhash("confirmed")
+                  .then(({ blockhash }) => {
+                      transaction.recentBlockhash = blockhash;
+                      transaction.feePayer = newWalletKey;
+
+                      window.solana
+                          .signAndSendTransaction(transaction)
+                          .then((sign: { signature: string }) => {
+                              console.log("sign === ", sign);
+
+                              connection
+                                  .confirmTransaction(sign.signature)
+                                  .then((signature) => {
+                                      console.log("signature", signature);
+                                      handleClose();
+                                      handleOpen();
+                                  })
+                                  .catch((e) => {
+                                      console.log("signature", e);
+                                      setIsError(!isError);
+                                  });
+                          })
+                          .catch((e: any) => {
+                              console.log("test == ", e);
+                              setIsError(!isError);
+                          });
+                  })
+                  .catch((e) => {
+                      console.log("hash", e);
+                      setIsError(!isError);
+                  });
+          })
+          .catch((e) => {
+              console.log("withdrawFromVesting", e);
+              setIsError(!isError);
+          });
+  }
+
   useEffect(() => {
     const newWalletKey = localStorage.getItem("publicKey");
     if (newWalletKey) {
       setNewWalletKey(new PublicKey(newWalletKey));
     } else {
-      connectSolana();
+      connectSolana().then(() => {});
     }
   }, []);
 
@@ -165,59 +191,17 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
     }
   }, [newWalletKey, token]);
 
-  const handleClaim = () => {
-    console.log("window.solana.isConnected", window.solana.isConnected);
 
-    setIsLoading(!isLoading);
-    newWalletKey &&
-      connection &&
-      token &&
-      data &&
-      data.availableToWithdrawTokens &&
-      token
-        .withdrawFromVesting(
-          newWalletKey,
-          new WithdrawFromVestingInstruction(data.availableToWithdrawTokens)
-        )
-        .then((transaction) => {
-          console.log("withdrawFromVesting", transaction);
-          connection
-            .getRecentBlockhash("confirmed")
-            .then(({ blockhash }) => {
-              transaction.recentBlockhash = blockhash;
-              transaction.feePayer = newWalletKey;
+  const handleClaim = async () => {
+    if (!isLoading) setIsLoading(true);
 
-              window.solana
-                .signAndSendTransaction(transaction)
-                .then((sign: { signature: string }) => {
-                  console.log("sign === ", sign);
-
-                  connection
-                    .confirmTransaction(sign.signature)
-                    .then((signature) => {
-                      console.log("signature", signature);
-                      handleClose();
-                      handleOpen();
-                    })
-                    .catch((e) => {
-                      console.log("signature", e);
-                      setIsError(!isError);
-                    });
-                })
-                .catch((e: any) => {
-                  console.log("test == ", e);
-                  setIsError(!isError);
-                });
-            })
-            .catch((e) => {
-              console.log("hash", e);
-              setIsError(!isError);
-            });
+    if (!window.solana?.isConnected) {
+        connectSolana().then(() => {
+            claimTransaction();
         })
-        .catch((e) => {
-          console.log("withdrawFromVesting", e);
-          setIsError(!isError);
-        });
+    } else {
+        claimTransaction();
+    }
   };
 
   const handleClickOpen = () => {
@@ -236,6 +220,10 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
 
   const handleExit = () => {
     setIsOpen(false);
+  };
+
+  const handleUnlocksModal = () => {
+    setIsOpenUnlocks(!isOpenUnlocks);
   };
 
   const { total, available, claimed, released } = values;
@@ -288,6 +276,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         {...{ open, isError, isLoading, handleClose, handleClaim }}
       />
       <CongratulationsModal {...{ isOpen }} handleClose={handleExit} />
+      <UnlockTokensModal {...{ allUnlocks }} isOpen={isOpenUnlocks} handleUnlocksModal={handleUnlocksModal} />
       <Box
         sx={{
           width: "100%",
@@ -309,48 +298,62 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
               text={
                 vestingType &&
                 vestingType.vesting_schedule &&
-                vestingType.vesting_schedule.start_time
+                vestingType.vesting_schedule.start_time()
                   ? moment
                       .unix(
-                        +vestingType?.vesting_schedule?.start_time.toString()
+                        +vestingType?.vesting_schedule?.start_time().toString()
                       )
                       .format("L")
                   : ""
               }
             />
             {/*starttime*/}
-            <Caption text={"Token Generation Event day"} />
+            {/*<Caption text={"Token Generation Event day"} />*/}
+            <Caption text={"First tokens unlocking date"} />
           </Box>
+          {/*<Box sx={{ paddingY: { xs: 1, md: 0 } }}>*/}
+          {/*  <BlueTitle*/}
+          {/*    text={*/}
+          {/*      // vestingType && vestingType.vesting_schedule*/}
+          {/*      //   ? `${new BigNumber(total)*/}
+          {/*      //       .multipliedBy(*/}
+          {/*      //         vestingType?.vesting_schedule?.initial_unlock*/}
+          {/*      //       )*/}
+          {/*      //       .toString()} BX`*/}
+          {/*      //   : "0 BX"*/}
+          {/*        "0 BX"*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  <Caption text={"Tokens released on Token Generation Event"} />*/}
+          {/*</Box>*/}
           <Box sx={{ paddingY: { xs: 1, md: 0 } }}>
-            <BlueTitle
-              text={
-                vestingType && vestingType.vesting_schedule
-                  ? `${new BigNumber(total)
-                      .multipliedBy(
-                        vestingType?.vesting_schedule?.initial_unlock
-                      )
-                      .toString()} BX`
-                  : "0 B"
-              }
-            />
-            <Caption text={"Tokens released on Token Generation Event"} />
-          </Box>
-          <Box sx={{ paddingY: { xs: 1, md: 0 } }}>
-            <BlueTitle text={cliffTime} />
-            <Caption text={"Cliff period ending in"} />
+              <Box sx={{display: "flex", flexDirection: "row", marginLeft: "40px", }}>
+                  <BlueTitle
+                      text={nextUnlockDate}
+                  />
+                  <IconButton sx={{'&:hover': {background: "grey"}}} onClick={handleUnlocksModal}>
+                      <HelpIcon fontSize={"medium"} sx={{ color: "#FFFFFF" }}/>
+                  </IconButton>
+              </Box>
+              {new Date(nextUnlockDate) > new Date() ? (
+                  <Caption text={"Next tokens unlocking date"} />
+              ) : (
+                  <Caption text={"Last tokens unlocking date"} />
+              )}
           </Box>
         </Box>
         <LinearProgressWithLabel
-          value={new BigNumber(total).dividedBy(released).toString()}
+          value={String(Math.round(Number(released) / Number(total) * 100))}
+          // value={50}
           topText={released + " BX"}
           topStickyText={total + " BX"}
           bottomText={moment(new Date()).format("L")} //current time
           bottomStickyText={
             vestingType &&
             vestingType.vesting_schedule &&
-            vestingType.vesting_schedule.end_time
+            vestingType.vesting_schedule.last()
               ? moment
-                  .unix(+vestingType?.vesting_schedule?.end_time.toString())
+                  .unix(+vestingType?.vesting_schedule?.last().toString())
                   .format("L")
               : ""
           }

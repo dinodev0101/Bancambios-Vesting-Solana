@@ -12,9 +12,8 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const savedToken = localStorage.getItem("publicKey");
-  // const token = !!window.solana && !!savedToken;
-  //   return token ? children : <Navigate to="/" />;
-    return !!savedToken ? children : <Navigate to="/" />;
+
+  return !!savedToken ? children : <Navigate to="/" />;
 };
 
 function App() {
