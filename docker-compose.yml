@@ -13,11 +13,7 @@ services:
     build:
       context: .
       dockerfile: ./dockerfile
-    # environment:
-    #   HOST: 127.0.0.1
-    # entrypoint:
-    #   - /bin/bash
-    #   - -c
-    #   - sleep 10000
+    ports:
+      - "8091:80"
     networks:
       - network1
