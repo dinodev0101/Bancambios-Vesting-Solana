@@ -11,33 +11,33 @@ variables:
   IMAGE_NAME: $AWS_REG_URL/bc-bx-tge-${CI_COMMIT_REF_SLUG}-srm-vesting-fe:${CI_PIPELINE_ID}-${CI_COMMIT_SHORT_SHA}
 
 stages:
-  # - build
+  - build
   - deploy
 
-# # --- commit develop
-# build-develop:
-#   stage: build
-#   before_script:
-#     - apk add binutils curl
-#     - curl -sL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -o /etc/apk/keys/sgerrand.rsa.pub
-#     - curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-2.31-r0.apk
-#     - curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-bin-2.31-r0.apk
-#     - apk add glibc-2.31-r0.apk glibc-bin-2.31-r0.apk
-#     - curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip &&
-#       unzip awscliv2.zip > /dev/null 2>&1 &&
-#       aws/install > /dev/null 2>&1
-#     - docker --version && aws --version
-#     - export AWS_ACCESS_KEY_ID="$AZ_AWS_ACCESS_KEY_ID"
-#     - export AWS_SECRET_ACCESS_KEY="$AZ_AWS_SECRET_ACCESS_KEY"
-#     - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_REG_URL}
-#   script:
-#     - docker build
-#         --build-arg APP_ENV_ARG="develop"
-#       -t $IMAGE_NAME .
-#     - docker push $IMAGE_NAME
-#     - docker rmi -f $IMAGE_NAME
-#   tags:
-#     - bc-exchange-gitlab-runner-01
+# --- commit develop
+build-develop:
+  stage: build
+  before_script:
+    - apk add binutils curl
+    - curl -sL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub -o /etc/apk/keys/sgerrand.rsa.pub
+    - curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-2.31-r0.apk
+    - curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.31-r0/glibc-bin-2.31-r0.apk
+    - apk add glibc-2.31-r0.apk glibc-bin-2.31-r0.apk
+    - curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip &&
+      unzip awscliv2.zip > /dev/null 2>&1 &&
+      aws/install > /dev/null 2>&1
+    - docker --version && aws --version
+    - export AWS_ACCESS_KEY_ID="$AZ_AWS_ACCESS_KEY_ID"
+    - export AWS_SECRET_ACCESS_KEY="$AZ_AWS_SECRET_ACCESS_KEY"
+    - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_REG_URL}
+  script:
+    - docker build
+        --build-arg APP_ENV_ARG="develop"
+      -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
+    - docker rmi -f $IMAGE_NAME
+  tags:
+    - bc-exchange-gitlab-runner-01
 
 stand-01-develop:
   stage: deploy
@@ -54,15 +54,15 @@ stand-01-develop:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - chmod -R 755 .ansible && cd .ansible
     - ansible -m ping bc-bx-tge-stand-01-develop
-    # - ansible-playbook
-    #   -l develop
-    #   -e aws_access_key_id=$AZ_AWS_ACCESS_KEY_ID
-    #   -e aws_secret_access_key=$AZ_AWS_SECRET_ACCESS_KEY
-    #   -e aws_region=$AWS_REGION
-    #   -e aws_reg_url=$AWS_REG_URL
-    #   -e image_name=$IMAGE_NAME
-    #   -e server=develop
-    #   srm-vesting-fe.yml
+    - ansible-playbook
+      -l develop
+      -e aws_access_key_id=$AZ_AWS_ACCESS_KEY_ID
+      -e aws_secret_access_key=$AZ_AWS_SECRET_ACCESS_KEY
+      -e aws_region=$AWS_REGION
+      -e aws_reg_url=$AWS_REG_URL
+      -e image_name=$IMAGE_NAME
+      -e server=develop
+      srm-vesting-fe.yml
   only:
     - develop
   tags:
