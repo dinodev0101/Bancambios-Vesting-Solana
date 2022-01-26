@@ -15,7 +15,7 @@
   "types": "dist/token-vesing.d.ts",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "tsc -w",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
