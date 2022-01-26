@@ -1,0 +1,23 @@
+version: '3.2'
+
+networks:
+  network1:
+    external: true
+
+services:
+
+  srm-vesting-fe:
+    container_name: srm-vesting-fe-develop
+    image: srm_vesting_fe:latest
+    restart: always
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    # environment:
+    #   HOST: 127.0.0.1
+    # entrypoint:
+    #   - /bin/bash
+    #   - -c
+    #   - sleep 10000
+    networks:
+      - network1
