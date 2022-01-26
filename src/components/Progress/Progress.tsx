@@ -26,7 +26,7 @@ const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> = ({
       <Box sx={{ width: "100%", position: "relative" }}>
         <RelativeTopText
           sx={{
-            left: `${+value - 5}%`,
+            left: `0`,
           }}
         >
           {topText}
@@ -39,7 +39,7 @@ const LinearProgressWithLabel: React.FC<LinearProgressWithLabelProps> = ({
         />
         <RelativeBottomText
           sx={{
-            left: `${+value - 5}%`,
+            left: `0`,
           }}
         >
           {bottomText}

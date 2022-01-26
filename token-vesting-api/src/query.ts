@@ -1,4 +1,4 @@
-import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
 import { VestingSchedule } from "./models";
 import BigNumber from "bignumber.js";
@@ -14,18 +14,14 @@ export class VestingStatistic {
   ) {}
 
   toString(): string {
-    const allTokens = new BigNumber(this.allTokens.toString()).div(
-      LAMPORTS_PER_SOL
-    );
-    const unlockedTokens = new BigNumber(this.unlockedTokens.toString()).div(
-      LAMPORTS_PER_SOL
-    );
+    const allTokens = new BigNumber(this.allTokens.toString());
+    const unlockedTokens = new BigNumber(this.unlockedTokens.toString());
     const availableToWithdrawTokens = new BigNumber(
       this.availableToWithdrawTokens.toString()
-    ).div(LAMPORTS_PER_SOL);
+    );
     const withdrawn_tokens = new BigNumber(
       this.withdrawn_tokens.toString()
-    ).div(LAMPORTS_PER_SOL);
+    );
 
     return (
       `All tokens: ${allTokens}\n` +
@@ -48,33 +44,21 @@ export class VestingTypeStatistic {
   ) {}
 
   toString(): string {
-    const locked_tokens_amount = new BigNumber(
-      this.locked_tokens_amount.toString()
-    ).div(LAMPORTS_PER_SOL);
-    const tokensInTokenPool = new BigNumber(
-      this.tokensInTokenPool.toString()
-    ).div(LAMPORTS_PER_SOL);
-
-    const unlockPeriod = this.vesting_schedule.unlock_period;
-    const unlockPeriodTotalMinutes = unlockPeriod.divn(60);
-    const unlockPeriodTotalHours = unlockPeriodTotalMinutes.divn(60);
-    return (
-      `Locked tokens: ${locked_tokens_amount}\n` +
-      `Administrator: ${this.administrator.toString()}\n` +
-      `Token pool: ${this.token_pool.toString()}\n` +
-      `Tokens in token pool: ${tokensInTokenPool}\n` +
-      `Start time: ${new Date(
-        this.vesting_schedule.start_time.muln(1000).toNumber()
-      )}\n` +
-      `End time: ${new Date(
-        this.vesting_schedule.end_time.muln(1000).toNumber()
-      )}\n` +
-      `Cliff: ${new Date(
-        this.vesting_schedule.cliff.muln(1000).toNumber()
-      )}\n` +
-      `Unlock period: ${unlockPeriodTotalHours.divn(24)} days, ${unlockPeriodTotalHours.modn(24)} hours, ` +
-      `${unlockPeriodTotalMinutes.modn(60)} minutes and ${unlockPeriod.modn(60)} seconds\n` +
-      `Initial unlock: ${this.vesting_schedule.initial_unlock.toString()}`
-    );
+    let result = '';
+    result += `Locked tokens: ${this.locked_tokens_amount}\n`;
+    result += `Administrator: ${this.administrator.toString()}\n`;
+    result += `Token pool: ${this.token_pool.toString()}\n`;
+    result += `Tokens in pool: ${this.tokensInTokenPool.toString()}\n`;
+    result += 'Vesting schedule:\n';
+    result += `    Total tokens: ${this.vesting_schedule.token_count?.toNumber()}\n`;
+    result += `    Total vestings: ${this.vesting_schedule.vesting_count}\n`;
+    for(let i = 0; i < this.vesting_schedule.vesting_count!; i+=1) {
+      result += `        Vesting ${i}:\n`
+      result += `            Tokens: ${this.vesting_schedule.vestings![i][0]}\n`;
+      result += `            Start time: ${this.vesting_schedule.vestings![i][1].start_time.toNumber()}\n`;
+      result += `            Unlock period: ${this.vesting_schedule.vestings![i][1].unlock_period.toNumber()}\n`;
+      result += `            Unlock count: ${this.vesting_schedule.vestings![i][1].unlock_count}\n`;
+    }
+    return result;
   }
 }
