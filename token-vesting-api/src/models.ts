@@ -15,7 +15,7 @@ const PublicKeyCreator = {
 };
 
 export const VestingsCreator = { 
-  serialize: (value: Array<[BN, LinearVesting]>, writer) => {
+  serialize: (value: Array<[BN, LinearVesting]>, writer: any) => {
     if (value.length > MAX_VESTINGS) 
         throw new Error("Too many vestings in schedule");
     for (let i = 0; i < value.length; i+=1) {
@@ -31,7 +31,7 @@ export const VestingsCreator = {
         writer.writeU8(0);
     }
   },
-  deserialize: (reader): Array<[BN, LinearVesting]> => {
+  deserialize: (reader: any): Array<[BN, LinearVesting]> => {
     let result = Array<[BN, LinearVesting]>(MAX_VESTINGS);
     for (let i = 0; i < MAX_VESTINGS; i+=1) {
       let tokens = reader.readU64();
