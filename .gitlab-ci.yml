@@ -37,7 +37,7 @@ build-develop:
     - docker push $IMAGE_NAME
     - docker rmi -f $IMAGE_NAME
   tags:
-    - boxxy-gitlab-runner-01
+    - bc-exchange-gitlab-runner-01-develop
 
 # stand-01-develop:
 #   stage: deploy
