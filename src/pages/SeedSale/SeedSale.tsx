@@ -31,10 +31,10 @@ interface IValues {
   claimed: string;
 }
 
-const network: string = "https://api.devnet.solana.com";
-const pubKey: string = "7Cn64G2NPUakdjupVDhPTNQWPfiMzJd4DMvPsuDBG3yX";
-const mint: string = "38NgALrBo6yjRaSuJNgjyDYmtgSaxZbxbZaYRVtiC8fB";
-const creator: string = "7rErqb9hBGzb5jTBHFoJyigxf6DQ3GqCG5seMEmbDT8q";
+const network: string = "https://api.testnet.solana.com";
+const pubKey: string = "Fjbh45ZhxH93z84uAqNgQ6T12LeBCiC4djfjzuKRXbms";
+const mint: string = "5cVJ6GDRsu6kmcMbRbzPUPyBvmooZ3aUHnGDPjhm5T5U";
+const creator: string = "ATT9No3J4ajyMENTHPc9dJywWHe7Hq6kmqefA3WVuRMp";
 
 const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [values, setValues] = useState<IValues>({
