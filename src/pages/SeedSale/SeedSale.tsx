@@ -344,7 +344,6 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         </Box>
         <LinearProgressWithLabel
           value={String(Math.round(Number(released) / Number(total) * 100))}
-          // value={50}
           topText={released + " BX"}
           topStickyText={total + " BX"}
           bottomText={moment(new Date()).format("L")} //current time

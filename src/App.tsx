@@ -5,6 +5,7 @@ import Login from "./pages/Login/Login";
 import styles from "./App.module.css";
 import { GlobalStyle } from './styles/global_style';
 import Logo from "./components/Logo/Logo";
+import InvestorRegistration from "./pages/InvestorRegistration/Cabinet";
 
 interface PrivateRouteProps {
   children: ReactElement;
@@ -26,7 +27,8 @@ function App() {
                   <div className={styles.container}>
                       <Routes>
                           <Route index={false} path="/" element={<Login />} />
-                          <Route path="/cabinet" element={<PrivateRoute><Cabinet /></PrivateRoute>}/>
+                          <Route path="/cabinet" element={<PrivateRoute><Cabinet /></PrivateRoute>} />
+                          <Route path="/investor-registration" element={<InvestorRegistration />} />
                           {/*<Route path="/logout" element={<Logout />} />*/}
                       </Routes>
                   </div>
