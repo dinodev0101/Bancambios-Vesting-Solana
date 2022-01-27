@@ -7,12 +7,9 @@ networks:
 services:
 
   srm-vesting-fe:
-    container_name: srm-vesting-fe-develop
-    image: srm_vesting_fe:latest
+    container_name: srm-vesting-fe-{{ server }}
+    image: "{{ image_name }}"
     restart: always
-    build:
-      context: .
-      dockerfile: ./dockerfile
     ports:
       - "8091:80"
     networks:
