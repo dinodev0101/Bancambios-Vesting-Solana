@@ -196,11 +196,15 @@ const InvestorRegistration = () => {
 
 
   const checkWallet = async (wallet: string) => {
-    // const walletCheckSolana = await window.solana.getAccountInfo(new PublicKey(wallet))
-    const walletCheckWeb3 = await connection?.getAccountInfo(new PublicKey(wallet))
-    // console.log('walletCheckSolana = ', walletCheckSolana)
-    console.log('walletCheckWeb3 = ', walletCheckWeb3)
-    return walletCheckWeb3;
+    try {
+      const pubKey = new PublicKey(wallet)
+      const walletCheckWeb3 = await connection?.getAccountInfo(pubKey)
+      console.log('walletCheckWeb3 = ', walletCheckWeb3)
+      return walletCheckWeb3;
+    } catch (err) {
+      console.log('Checking wallet error: ', err)
+      return null;
+    }
   }
 
   const handleChangeVestingTypeSelect = (event: SelectChangeEvent) => {
@@ -252,6 +256,8 @@ const InvestorRegistration = () => {
 
   const sendTransaction = () => {
     console.log('sendTransaction func!')
+    console.log('createVestingAccount wallet = ', wallet)
+    console.log('tokens  = ', tokens)
 
     wallet &&
     newWalletKey &&
@@ -269,18 +275,34 @@ const InvestorRegistration = () => {
           connection
               .getRecentBlockhash("confirmed")
               .then(({ blockhash }) => {
-                // transaction.recentBlockhash = blockhash;
+                console.log('blockhash = ', blockhash)
+                const bufferWalletKey = localStorage.getItem("publicKey");
+                console.log('bufferWalletKey transaction = ', bufferWalletKey)
+                transaction.recentBlockhash = blockhash;
                 // transaction.feePayer = newWalletKey;
+                transaction.feePayer = new PublicKey(bufferWalletKey!);
 
-                // connection
-                //     .sendTransaction(transaction)
-                //     .then((sign: { signature: string }) => {
-                //       console.log("sign === ", sign);
+                console.log("window.solana = ", window.solana)
+                console.log("transaction after = ", transaction)
+
+
+                // !Проблема вот тут!!
                 window.solana
                     .signAndSendTransaction(transaction)
                     .then((sign: { signature: string }) => {
+                      // Сюда не доходит..
                       console.log("sign === ", sign);
 
+                // window.solana
+                //     .signTransaction(transaction)
+                //     .then((signedTransaction: any) => {
+                //       console.log("signedTransaction === ", signedTransaction);
+                //
+                //       connection
+                //           .sendRawTransaction(signedTransaction)
+                //           .then((signature) => {
+                //             console.log("signature", signature);
+                //       })
                       connection
                           .confirmTransaction(sign.signature)
                           .then((signature) => {

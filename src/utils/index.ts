@@ -5,10 +5,10 @@ import {TokenVesting} from "token-vesting-api";
 
 const bigNumber = require("bignumber.js");
 
-const network: string = "https://api.testnet.solana.com";
-const pubKey: string = "Fjbh45ZhxH93z84uAqNgQ6T12LeBCiC4djfjzuKRXbms";
-const mint: string = "5cVJ6GDRsu6kmcMbRbzPUPyBvmooZ3aUHnGDPjhm5T5U";
-const owner: string = "ATT9No3J4ajyMENTHPc9dJywWHe7Hq6kmqefA3WVuRMp";
+const network: string = "https://api.devnet.solana.com";
+const pubKey: string = "BDK4xmJXnvTYoMtVBHkahH6Qbpz3hCCc4GzGAq3Kjukp";
+const mint: string = "fAe6m2gZobAzMmaMxEtN4wxF3JAfmLFeMed7mmnjXH7";
+const owner: string = "FeoRru9dKQzpctSZUkqnqn8UtkkyqPkUkMXzdBNTEQh";
 
 export const getNetwork = (): string => {
     return network;
@@ -16,10 +16,6 @@ export const getNetwork = (): string => {
 
 export const getPubKey = (): string => {
     return pubKey;
-}
-
-export const getCreator = (): string => {
-    return Keypair.fromSecretKey(Uint8Array.from(JSON.parse("[40,225,84,232,113,229,199,127,142,96,106,220,125,95,137,75,42,190,17,243,60,205,140,156,241,79,59,104,170,28,5,133,140,127,216,78,185,223,72,145,121,235,20,75,48,239,171,82,154,153,136,126,157,2,213,251,180,207,250,2,45,121,84,23]"))).publicKey.toString();
 }
 
 export const getTokenVesting = (
