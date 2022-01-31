@@ -32,9 +32,9 @@ interface IValues {
 }
 
 const network: string = "https://api.testnet.solana.com";
-const pubKey: string = "Fjbh45ZhxH93z84uAqNgQ6T12LeBCiC4djfjzuKRXbms";
-const mint: string = "5cVJ6GDRsu6kmcMbRbzPUPyBvmooZ3aUHnGDPjhm5T5U";
-const creator: string = "ATT9No3J4ajyMENTHPc9dJywWHe7Hq6kmqefA3WVuRMp";
+const pubKey: string = "gFMPmX4ZLTPHLQEs2Y5VLo4LozHshqY3MVDC4d5oR8Z";
+const mint: string = "sd8doDLRpq9Yn4CB8Cbx2hnonUoTWycgWHBZ9ALRr6Z";
+const creator: string = "E4jis7AHiMxdgMsvK7S5YmHf4y4Kqneh9XY3VokRZdPV";
 
 const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [values, setValues] = useState<IValues>({
