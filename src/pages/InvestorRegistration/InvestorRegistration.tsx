@@ -4,12 +4,11 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import NumberFormat from 'react-number-format';
 import { styled } from "@mui/material/styles";
 import ButtonComponent from "../../components/Button/Button";
-import { PublicKey, Connection, sendAndConfirmTransaction } from "@solana/web3.js";
-import {converterBN, getNetwork, getTokenVesting} from "../../utils";
+import { PublicKey, Connection } from "@solana/web3.js";
+import { getNetwork, getTokenVesting} from "../../utils";
 import { TokenVesting } from "token-vesting-api";
 import { CreateVestingAccountInstruction } from "token-vesting-api/dist/schema";
 import BN from "bn.js";
-import ClaimModal from "../../components/ClaimModal/ClaimModal";
 import CreateInvestorAccountModal from "../../components/CreateInvestorAccountModal/CreateInvestorAccountModal";
 // import {CreateVestingAccountInstruction} from "../../../token-vesting-api/src/schema";
 
@@ -189,12 +188,6 @@ const InvestorRegistration = () => {
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(false);
 
-  // const bufferWalletKey = localStorage.getItem("publicKey");
-  // if (bufferWalletKey) {
-  //   setNewWalletKey(new PublicKey(bufferWalletKey));
-  // }
-
-
   const checkWallet = async (wallet: string) => {
     try {
       const pubKey = new PublicKey(wallet)
@@ -244,16 +237,6 @@ const InvestorRegistration = () => {
   }, [vestingType]);
 
 
-
-  // const createVestingAccount = () => {
-  //   vestingToken && vestingToken
-  //       .createVestingAccount(
-  //           new PublicKey(wallet),
-  //           CreateVestingAccountInstruction(new BN(tokens))
-  //       )
-  // }
-
-
   const sendTransaction = () => {
     console.log('sendTransaction func!')
     console.log('createVestingAccount wallet = ', wallet)
@@ -263,8 +246,6 @@ const InvestorRegistration = () => {
     newWalletKey &&
     connection &&
     vestingToken &&
-    // data &&
-    // data.availableToWithdrawTokens &&
     vestingToken
         .createVestingAccount(
             new PublicKey(wallet),
@@ -279,12 +260,7 @@ const InvestorRegistration = () => {
                 const bufferWalletKey = localStorage.getItem("publicKey");
                 console.log('bufferWalletKey transaction = ', bufferWalletKey)
                 transaction.recentBlockhash = blockhash;
-                // transaction.feePayer = newWalletKey;
                 transaction.feePayer = new PublicKey(bufferWalletKey!);
-
-                console.log("window.solana = ", window.solana)
-                console.log("transaction after = ", transaction)
-
 
                 // !Проблема вот тут!!
                 window.solana
@@ -293,16 +269,6 @@ const InvestorRegistration = () => {
                       // Сюда не доходит..
                       console.log("sign === ", sign);
 
-                // window.solana
-                //     .signTransaction(transaction)
-                //     .then((signedTransaction: any) => {
-                //       console.log("signedTransaction === ", signedTransaction);
-                //
-                //       connection
-                //           .sendRawTransaction(signedTransaction)
-                //           .then((signature) => {
-                //             console.log("signature", signature);
-                //       })
                       connection
                           .confirmTransaction(sign.signature)
                           .then((signature) => {
@@ -312,47 +278,24 @@ const InvestorRegistration = () => {
                           })
                           .catch((e) => {
                             console.log("signature", e);
-                            setIsError(!isError);
+                            setIsError(true);
                           });
                     })
                     .catch((e: any) => {
                       console.log("test == ", e);
-                      setIsError(!isError);
+                      setIsError(true);
                     });
               })
               .catch((e) => {
                 console.log("hash", e);
-                setIsError(!isError);
+                setIsError(true);
               });
         })
         .catch((e) => {
           console.log("createVestingAccount", e);
-          setIsError(!isError);
+          setIsError(true);
         });
   }
-
-  const handleSubmit = async (event: React.SyntheticEvent) => {
-    if (!vestingType || !wallet || !tokens) return;
-    setIsLoading(true);
-    sendTransaction();
-    // const checkedWallet = await checkWallet(wallet);
-    // console.log('checked wallet = ', checkedWallet)
-    // setOpen(true);
-    console.log("Clicked submit button")
-    event.preventDefault();
-  };
-
-  // const handleClaim = async () => {
-  //   if (!isLoading) setIsLoading(true);
-  //
-  //   if (!window.solana?.isConnected) {
-  //     connectSolana().then(() => {
-  //       claimTransaction();
-  //     })
-  //   } else {
-  //     claimTransaction();
-  //   }
-  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -360,11 +303,21 @@ const InvestorRegistration = () => {
     setIsLoading(false);
   };
 
+  const handleSubmit = async (event: React.SyntheticEvent) => {
+    if (!vestingType || !wallet || !tokens) return;
+    setIsLoading(true);
+    setOpen(true);
+    sendTransaction();
+
+    console.log("Clicked submit button")
+    event.preventDefault();
+  };
+
   return (
       <>
-        {/*<CreateInvestorAccountModal*/}
-        {/*    {...{ open, isError, isLoading, handleClose }}*/}
-        {/*/>*/}
+        <CreateInvestorAccountModal
+            {...{ open, isError, isLoading, handleClose, wallet }}
+        />
         <Box sx={{
           width: "100%",
           height: "500px",

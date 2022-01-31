@@ -1,31 +1,30 @@
 import {Box, CircularProgress, Typography} from "@mui/material";
 import React from "react";
-import Button from "../Button/Button";
 import ModalWrapper from "../ModalWrapper/ModalWrapper";
 import Caption from "../Title/Caption";
-import Heading from "../Title/Heading";
 import FmdBadIcon from "@mui/icons-material/FmdBad";
+import ButtonComponent from "../Button/Button";
 
-interface CreateInvestorAccountModal {
+interface CreateInvestorAccountModalProps {
   handleClose: () => void;
-  // handleClaim: () => void;
   isLoading: boolean;
   open: boolean;
   isError: boolean;
+  wallet: string;
 }
 
-const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModal> = ({
+const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
   open,
   isLoading,
   isError,
   handleClose,
-  // handleClaim,
+  wallet,
 }) => {
   return (
     <ModalWrapper
       open={open}
       handleClose={handleClose}
-      title={"Create new BX investor account"}
+      title={"Creating new BX investor account"}
     >
       {isError ? (
           <Box
@@ -39,7 +38,7 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModal> = ({
           >
             <FmdBadIcon sx={{ color: "rgb(183,82,230)", fontSize: 90, marginBottom: "10px", }} />
             <Typography variant={"subtitle1"} align={"center"}>
-              Sorry, your tokens were not claimed. Try again later.
+              Sorry, investor's vesting account was not created. Try again later.
             </Typography>
           </Box>
         ) : isLoading ? (
@@ -59,51 +58,45 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModal> = ({
           <Caption sx={{ p: 2 }} text={"Processing"} />
         </Box>
       ) : (
-        <Box
-          px={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "column",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <Caption text={"Tokens Available to Claim"} />
-          <Heading
-            sx={{
-              textAlign: "center",
-              fontSize: { xs: "48px", lg: "64px" },
-              padding: 0,
-              wordWrap: "break-word",
-              lineHeight: { xs: "50px" },
-            }}
-            text={" bx"}
-          />
           <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              pb: 4,
-              flexDirection: "column",
-            }}
+              sx={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: { xs: "stretch", md: "center" },
+                flexDirection: "column",
+                height: "100%",
+                width: "100%",
+              }}
           >
-            <Caption
-              sx={{ padding: 2, color: "#808080" }}
-              text={
-                "After you claim the tokens, they will be sent to your wallet address"
-              }
-            />
-            <Box sx={{ width: "75%" }}>
-              {/*<Button*/}
-              {/*    type={"claim"}*/}
-              {/*  title={"claim ALL!"}*/}
-              {/*  isIconVisible={false}*/}
-              {/*  onClick={handleClaim}*/}
-              {/*/>*/}
+            <Box sx={{ p: { xs: 1, md: 3 } }}>
+              <Typography variant={"subtitle1"} align={"center"}>Investor's vesting account successfully created:</Typography>
+              <Caption
+                  sx={{
+                    p: 1,
+                    backgroundColor: "#202124",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                  }}
+                  text={wallet}
+              />
+            </Box>
+            <Box
+                sx={{
+                  width: "100%",
+                  display: { xs: "flex" },
+                  justifyContent: "center",
+                }}
+            >
+              <Box sx={{ width: "75%" }}>
+                <ButtonComponent
+                    type={"done"}
+                    isIconVisible={false}
+                    onClick={handleClose}
+                    title={"Done"}
+                />
+              </Box>
             </Box>
           </Box>
-        </Box>
       )}
     </ModalWrapper>
   );

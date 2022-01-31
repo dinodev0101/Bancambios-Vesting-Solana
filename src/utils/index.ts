@@ -1,13 +1,13 @@
 import {VestingSchedule} from "token-vesting-api/src/models";
 import BN from "bn.js";
-import {Connection, Keypair, PublicKey} from "@solana/web3.js";
+import {Connection, PublicKey} from "@solana/web3.js";
 import {TokenVesting} from "token-vesting-api";
 
 const bigNumber = require("bignumber.js");
 
 const network: string = "https://api.devnet.solana.com";
-const pubKey: string = "BDK4xmJXnvTYoMtVBHkahH6Qbpz3hCCc4GzGAq3Kjukp";
-const mint: string = "fAe6m2gZobAzMmaMxEtN4wxF3JAfmLFeMed7mmnjXH7";
+const pubKey: string = "78Teetgrte5kARqzgwqPDwktJ4N7hq6Z7cmuw48vQ1we";
+const mint: string = "HUnzfmBamK8Qdqt1tgsugfVYDA347wRGXvpzkzmQqRYT";
 const owner: string = "FeoRru9dKQzpctSZUkqnqn8UtkkyqPkUkMXzdBNTEQh";
 
 export const getNetwork = (): string => {
@@ -30,50 +30,6 @@ export const getTokenVesting = (
         type
     );
 }
-
-// export const sendTransaction = (token: TokenVesting, receiver: PublicKey, instruction: CreateVestingAccountInstruction) => {
-//     token
-//         .createVestingAccount(
-//             receiver,
-//             instruction
-//         )
-//         .then((transaction)  => {
-//             console.log("withdrawFromVesting", transaction);
-//             connection
-//                 .getRecentBlockhash("confirmed")
-//                 .then(({ blockhash }) => {
-//                     transaction.recentBlockhash = blockhash;
-//                     transaction.feePayer = newWalletKey;
-//
-//                     window.solana
-//                         .signAndSendTransaction(transaction)
-//                         .then((sign: { signature: string }) => {
-//                             console.log("sign === ", sign);
-//
-//                             connection
-//                                 .confirmTransaction(sign.signature)
-//                                 .then((signature) => {
-//                                     console.log("signature", signature);
-//                                     handleClose();
-//                                     handleOpen();
-//                                 })
-//                                 .catch((e) => {
-//                                     console.log("signature", e);
-//                                     setIsError(!isError);
-//                                 });
-//                         })
-//                         .catch((e: any) => {
-//                             console.log("test == ", e);
-//                             setIsError(!isError);
-//                         });
-//                 })
-//                 .catch((e) => {
-//                     console.log("hash", e);
-//                     setIsError(!isError);
-//                 });
-//         });
-//     // sendAndConfirmTransaction(new Connection(network), )
-// }
 
 export const converterBN = (number: { toString: () => string; }): string => (new bigNumber(number.toString())
         // .dividedBy(LAMPORTS_PER_SOL)
