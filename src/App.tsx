@@ -5,7 +5,7 @@ import Login from "./pages/Login/Login";
 import styles from "./App.module.css";
 import { GlobalStyle } from './styles/global_style';
 import Logo from "./components/Logo/Logo";
-import InvestorRegistration from "./pages/InvestorRegistration/Cabinet";
+import InvestorRegistration from "./pages/InvestorRegistration/InvestorRegistration";
 
 interface PrivateRouteProps {
   children: ReactElement;

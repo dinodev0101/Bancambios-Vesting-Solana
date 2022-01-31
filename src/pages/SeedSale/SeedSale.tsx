@@ -13,7 +13,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
-import {converterBN, getNextUnlockDate, getAllUnlocks} from "../../utils";
+import {converterBN, getNextUnlockDate, getAllUnlocks, getTokenVesting, getNetwork, getPubKey} from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
 import BN from "bn.js";
@@ -31,10 +31,10 @@ interface IValues {
   claimed: string;
 }
 
-const network: string = "https://api.testnet.solana.com";
-const pubKey: string = "Fjbh45ZhxH93z84uAqNgQ6T12LeBCiC4djfjzuKRXbms";
-const mint: string = "5cVJ6GDRsu6kmcMbRbzPUPyBvmooZ3aUHnGDPjhm5T5U";
-const creator: string = "ATT9No3J4ajyMENTHPc9dJywWHe7Hq6kmqefA3WVuRMp";
+// const network: string = "https://api.testnet.solana.com";
+// const pubKey: string = "Fjbh45ZhxH93z84uAqNgQ6T12LeBCiC4djfjzuKRXbms";
+// const mint: string = "5cVJ6GDRsu6kmcMbRbzPUPyBvmooZ3aUHnGDPjhm5T5U";
+// const creator: string = "ATT9No3J4ajyMENTHPc9dJywWHe7Hq6kmqefA3WVuRMp";
 
 const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [values, setValues] = useState<IValues>({
@@ -74,16 +74,17 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   useEffect(() => {
     const newWalletKey = localStorage.getItem("publicKey");
     newWalletKey && setNewWalletKey(new PublicKey(newWalletKey));
-    setConnection(new Connection(network));
-    setToken(
-      new TokenVesting(
-        new Connection(network),
-        new PublicKey(pubKey),
-        new PublicKey(mint),
-        new PublicKey(creator),
-        name
-      )
-    );
+    setConnection(new Connection(getNetwork()));
+    setToken(getTokenVesting(name));
+    // setToken(
+    //   new TokenVesting(
+    //     new Connection(network),
+    //     new PublicKey(pubKey),
+    //     new PublicKey(mint),
+    //     new PublicKey(creator),
+    //     name
+    //   )
+    // );
     return () => {};
   }, [name]);
 
@@ -484,7 +485,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 textAlign={"center"}
                 sx={{marginLeft: "8px", opacity: "0.75"}}
             >
-                {pubKey}
+                {getPubKey()}
             </Typography>
         </Box>
         <Box sx={{
