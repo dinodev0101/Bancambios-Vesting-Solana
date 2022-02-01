@@ -36,6 +36,8 @@ build-develop:
       -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
     - docker rmi -f $IMAGE_NAME
+  only:
+    - develop
   tags:
     - bc-exchange-gitlab-runner-01
 
