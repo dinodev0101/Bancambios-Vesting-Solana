@@ -308,25 +308,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                   : ""
               }
             />
-            {/*starttime*/}
-            {/*<Caption text={"Token Generation Event day"} />*/}
             <Caption text={"First tokens unlocking date"} />
           </Box>
-          {/*<Box sx={{ paddingY: { xs: 1, md: 0 } }}>*/}
-          {/*  <BlueTitle*/}
-          {/*    text={*/}
-          {/*      // vestingType && vestingType.vesting_schedule*/}
-          {/*      //   ? `${new BigNumber(total)*/}
-          {/*      //       .multipliedBy(*/}
-          {/*      //         vestingType?.vesting_schedule?.initial_unlock*/}
-          {/*      //       )*/}
-          {/*      //       .toString()} BX`*/}
-          {/*      //   : "0 BX"*/}
-          {/*        "0 BX"*/}
-          {/*    }*/}
-          {/*  />*/}
-          {/*  <Caption text={"Tokens released on Token Generation Event"} />*/}
-          {/*</Box>*/}
           <Box sx={{ paddingY: { xs: 1, md: 0 } }}>
               <Box sx={{display: "flex", flexDirection: "row", marginLeft: "40px", }}>
                   <BlueTitle

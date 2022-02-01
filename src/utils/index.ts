@@ -2,12 +2,11 @@ import {VestingSchedule} from "token-vesting-api/src/models";
 import BN from "bn.js";
 import {Connection, PublicKey} from "@solana/web3.js";
 import {TokenVesting} from "token-vesting-api";
-
 const bigNumber = require("bignumber.js");
 
 const network: string = "https://api.devnet.solana.com";
-const pubKey: string = "6Rv4sVFXiGA23omYFyJeeyH6eJPmUhGY9PTrpadqip1w";
-const mint: string = "D8ygvWYPm8xwM9ajjfGcQRtzkMreBDir3uHDMmXShBwE";
+const pubKey: string = "5KYTEdtQfHmPk1aQ7WSf68Ls4ZpLd5RBZxZp1T9isgjJ";
+const mint: string = "hCdMdBoG49n1bQwYxboH341QkLwYJj9H9Y8yKjmAY7t";
 const owner: string = "D8ygvWYPm8xwM9ajjfGcQRtzkMreBDir3uHDMmXShBwE";
 
 export const getNetwork = (): string => {

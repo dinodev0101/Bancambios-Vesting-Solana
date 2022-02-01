@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { Box, InputLabel, MenuItem, FormControl, Typography, TextField, FormHelperText } from "@mui/material";
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import NumberFormat from 'react-number-format';
@@ -10,7 +10,6 @@ import { TokenVesting } from "token-vesting-api";
 import { CreateVestingAccountInstruction } from "token-vesting-api/dist/schema";
 import BN from "bn.js";
 import CreateInvestorAccountModal from "../../components/CreateInvestorAccountModal/CreateInvestorAccountModal";
-// import {CreateVestingAccountInstruction} from "../../../token-vesting-api/src/schema";
 
 interface CustomProps {
   onChange: (event: { target: { name: string; value: string } }) => void;
@@ -144,14 +143,6 @@ const MenuProps = {
   },
 };
 
-// const BootstrapMenuItem = styled(MenuItem)({
-//   '& .MuiMenuItem-root': {
-//     color: '#FFFFFF',
-//     backgroundColor: "#1E2022",
-//   },
-// });
-
-
 const NumberFormatCustom = React.forwardRef<NumberFormat<CustomProps>, CustomProps>(
     function NumberFormatCustom(props, ref) {
       const { onChange, ...other } = props;
@@ -177,31 +168,34 @@ const NumberFormatCustom = React.forwardRef<NumberFormat<CustomProps>, CustomPro
     })
 
 const InvestorRegistration = () => {
-  const [vestingType, setVestingType] = useState('');
-  const [wallet, setWallet] = useState('');
-  const [tokens, setTokens] = useState('');
+  const [vestingType, setVestingType] = useState<string>('');
+  const [wallet, setWallet] = useState<string>('');
+  const [tokens, setTokens] = useState<string>('');
   const [vestingToken, setVestingToken] = useState<TokenVesting>();
-  const [newWalletKey, setNewWalletKey] = useState<PublicKey>();
+  const [adminWalletKey, setAdminWalletKey] = useState<string>('');
   const [connection, setConnection] = useState<Connection>(new Connection(getNetwork()));
-  const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const checkWallet = async (wallet: string) => {
     try {
       const pubKey = new PublicKey(wallet)
       const walletCheckWeb3 = await connection?.getAccountInfo(pubKey)
-      console.log('walletCheckWeb3 = ', walletCheckWeb3)
-      return walletCheckWeb3;
+      if (walletCheckWeb3) {
+        return walletCheckWeb3;
+      } else {
+        console.log('Checking wallet error: Wallet does not exist or activated');
+        return null;
+      }
     } catch (err) {
-      console.log('Checking wallet error: ', err)
+      console.log('Checking wallet error: ', err);
       return null;
     }
   }
 
   const handleChangeVestingTypeSelect = (event: SelectChangeEvent) => {
-    console.log("Change event value =", event.target.value as string)
     setVestingType(event.target.value as string);
   };
 
@@ -212,102 +206,116 @@ const InvestorRegistration = () => {
   const handleFocusRemoving = async () => {
     const checkedWallet = await checkWallet(wallet);
     if (!checkedWallet) {
-      console.log('checkedWallet error = true')
       setError(true)
     } else {
-      console.log('checkedWallet error = false')
       setError(false)
     }
   }
 
   const handleChangeAmountOfTokens = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTokens(event.target.value);
-    console.log('Amount of BX tokens = ', event.target.value);
   };
 
   useEffect(() => {
-    if (!vestingType) return;
-    const bufferWalletKey = localStorage.getItem("publicKey");
-    console.log("bufferWalletKey = ", bufferWalletKey)
-    if (bufferWalletKey) {
-      setNewWalletKey(new PublicKey(bufferWalletKey));
-      setVestingToken(getTokenVesting(vestingType, bufferWalletKey!));
+    const adminWalletKey = localStorage.getItem("publicKey");
+    if (adminWalletKey) {
+      setAdminWalletKey(adminWalletKey);
+    } else {
+      connectSolana().then(() => {});
     }
+  }, []);
+
+  useEffect(() => {
+    if (!vestingType || !adminWalletKey) return;
+
+    setVestingToken(getTokenVesting(vestingType, adminWalletKey));
     setConnection(new Connection(getNetwork()));
-  }, [vestingType]);
+  }, [vestingType, adminWalletKey]);
 
+  const connectSolana = async () => {
+    try {
+      if (window.solana) {
+        if (!window.solana.isConnected) {
+          const key = await window.solana.connect();
+          setAdminWalletKey(key.publicKey.toString());
+        }
+      }
+    } catch (error) {
+      console.log("connectSolana error === ", error);
+    }
+  };
 
-  const sendTransaction = () => {
-    console.log('sendTransaction func!')
-    console.log('createVestingAccount wallet = ', wallet)
-    console.log('tokens  = ', tokens)
+    const sendTransaction = useCallback(
+    async () => {
+      await connectSolana();
 
-    wallet &&
-    newWalletKey &&
-    connection &&
-    vestingToken &&
-    vestingToken
-        .createVestingAccount(
-            new PublicKey(wallet),
-            new CreateVestingAccountInstruction(new BN(tokens))
-        )
-        .then((transaction) => {
-          console.log("createVestingAccount", transaction);
-          connection
-              .getRecentBlockhash("confirmed")
-              .then(({ blockhash }) => {
-                console.log('blockhash = ', blockhash)
-                const adminWalletKey = localStorage.getItem("publicKey");
-                console.log('adminWalletKey transaction = ', adminWalletKey)
-                transaction.recentBlockhash = blockhash;
-                transaction.feePayer = new PublicKey(adminWalletKey!);
+      wallet &&
+      adminWalletKey &&
+      connection &&
+      vestingToken &&
+      vestingToken
+          .createVestingAccount(
+              new PublicKey(wallet),
+              new CreateVestingAccountInstruction(new BN(tokens))
+          )
+          .then((transaction) => {
+            console.log("createVestingAccount", transaction);
+            connection
+                .getRecentBlockhash("confirmed")
+                .then(({ blockhash }) => {
+                  console.log('blockhash = ', blockhash)
+                  transaction.recentBlockhash = blockhash;
+                  transaction.feePayer = new PublicKey(adminWalletKey);
 
-                window.solana
-                    .signAndSendTransaction(transaction)
-                    .then((sign: { signature: string }) => {
-                      console.log("sign === ", sign);
+                  window.solana
+                      .signAndSendTransaction(transaction)
+                      .then((sign: { signature: string }) => {
+                        console.log("sign === ", sign);
 
-                      connection
-                          .confirmTransaction(sign.signature)
-                          .then((signature) => {
-                            console.log("signature", signature);
-                            // handleClose();
-                            // handleOpen();
-                          })
-                          .catch((e) => {
-                            console.log("signature", e);
-                            setIsError(true);
-                          });
-                    })
-                    .catch((e: any) => {
-                      console.log("test == ", e);
-                      setIsError(true);
-                    });
-              })
-              .catch((e) => {
-                console.log("hash", e);
-                setIsError(true);
-              });
-        })
-        .catch((e) => {
-          console.log("createVestingAccount", e);
-          setIsError(true);
-        });
-  }
+                        connection
+                            .confirmTransaction(sign.signature, "confirmed")
+                            .then((signature) => {
+                              console.log("signature", signature);
+                              setIsError(false);
+                              setIsLoading(false);
+                            })
+                            .catch((e) => {
+                              console.log("signature", e);
+                              setIsError(true);
+                            });
+                      })
+                      .catch((e: any) => {
+                        console.log("test == ", e);
+                        setIsError(true);
+                      });
+                })
+                .catch((e) => {
+                  console.log("hash", e);
+                  setIsError(true);
+                });
+          })
+          .catch((e) => {
+            console.log("createVestingAccount", e);
+            setIsError(true);
+          });
+    },
+    [connection, adminWalletKey, tokens, vestingToken, wallet]
+);
 
   const handleClose = () => {
-    setOpen(false);
-    setIsError(false);
-    setIsLoading(false);
+    if (!isLoading) {
+      setOpen(false);
+      setIsError(false);
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     if (!vestingType || !wallet || !tokens) return;
     setIsLoading(true);
     setOpen(true);
-    sendTransaction();
+    await sendTransaction();
 
-    console.log("Clicked submit button")
     event.preventDefault();
   };
 
@@ -318,7 +326,8 @@ const InvestorRegistration = () => {
         />
         <Box sx={{
           width: "100%",
-          height: "500px",
+          height: "100%",
+          minHeight: "500px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -334,20 +343,11 @@ const InvestorRegistration = () => {
             justifyContent: "space-between",
             alignItems: "center",
             width: "100%",
-            maxWidth: "450px",
+            maxWidth: "466px",
             height: "100%",
-            paddingBottom: "16px"
+            padding: "0 16px 16px 16px",
+            boxSizing: "border-box",
           }}>
-            {/*<Box sx={{*/}
-            {/*  display: "flex",*/}
-            {/*  flexDirection: "column",*/}
-            {/*  justifyContent: "space-between",*/}
-            {/*  alignItems: "center",*/}
-            {/*  width: "100%",*/}
-            {/*  maxWidth: "450px",*/}
-            {/*  height: "100%",*/}
-            {/*  paddingBottom: "16px"*/}
-            {/*}}>*/}
             <Box sx={{
               display: "flex",
               flexDirection: "column",
@@ -363,12 +363,8 @@ const InvestorRegistration = () => {
               }}>
                 <BootstrapFormControl
                     fullWidth
-                    // variant={"standard"}
-                    // sx={{  background: "#1E2022", borderRadius: "18px", }}
                 >
                   <InputLabel id="vesting-type-select-label">Vesting type</InputLabel>
-                  {/*<BootstrapInputBase>Vesting type</BootstrapInputBase>*/}
-                  {/*<InputLabel id="vesting-type-select-label">Vesting type</InputLabel>*/}
                   <Select
                       required
                       labelId="vesting-type-select-label"
@@ -401,6 +397,11 @@ const InvestorRegistration = () => {
                     error={error}
                     onChange={handleChangeInvestorWallet}
                     onBlur={handleFocusRemoving}
+                    sx={error ? {
+                      '& .MuiFormHelperText-root': {
+                        color: 'rgb(210, 48, 47)',
+                      },
+                    } : {}}
                 />
               </Box>
               <Box sx={{
@@ -427,11 +428,10 @@ const InvestorRegistration = () => {
                   type={"claim"}
                   title={"Submit"}
                   onClick={handleSubmit}
-                  // disable={available === "0"}
                   isIconVisible={false}
+                  disable={error}
               />
             </Box>
-            {/*</Box>*/}
           </form>
         </Box>
       </>
