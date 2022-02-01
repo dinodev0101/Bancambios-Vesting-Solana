@@ -46,13 +46,14 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [newWalletKey, setNewWalletKey] = useState<PublicKey>();
   const [connection, setConnection] = useState<Connection>();
   const [token, setToken] = useState<TokenVesting>();
-  const [open, setOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenUnlocks, setIsOpenUnlocks] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenUnlocks, setIsOpenUnlocks] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isClaimed, setIsClaimed] = useState<boolean>(false);
   const [data, setData] = useState<VestingStatistic>();
   const [vestingType, setVestingType] = useState<VestingTypeAccount>();
   const [nextUnlockDate, setNextUnlockDate] = useState<string>("0");
@@ -126,6 +127,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                                   .confirmTransaction(sign.signature)
                                   .then((signature) => {
                                       console.log("signature", signature);
+                                      setIsClaimed(true);
                                       handleClose();
                                       handleOpen();
                                   })
@@ -213,9 +215,11 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   };
 
   const handleClose = () => {
-    setOpen(false);
-    setIsError(false);
-    setIsLoading(false);
+    if (!isLoading) {
+        setOpen(false);
+        setIsError(false);
+        setIsLoading(false);
+    }
   };
 
   const handleExit = () => {
@@ -307,25 +311,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                   : ""
               }
             />
-            {/*starttime*/}
-            {/*<Caption text={"Token Generation Event day"} />*/}
             <Caption text={"First tokens unlocking date"} />
           </Box>
-          {/*<Box sx={{ paddingY: { xs: 1, md: 0 } }}>*/}
-          {/*  <BlueTitle*/}
-          {/*    text={*/}
-          {/*      // vestingType && vestingType.vesting_schedule*/}
-          {/*      //   ? `${new BigNumber(total)*/}
-          {/*      //       .multipliedBy(*/}
-          {/*      //         vestingType?.vesting_schedule?.initial_unlock*/}
-          {/*      //       )*/}
-          {/*      //       .toString()} BX`*/}
-          {/*      //   : "0 BX"*/}
-          {/*        "0 BX"*/}
-          {/*    }*/}
-          {/*  />*/}
-          {/*  <Caption text={"Tokens released on Token Generation Event"} />*/}
-          {/*</Box>*/}
           <Box sx={{ paddingY: { xs: 1, md: 0 } }}>
               <Box sx={{display: "flex", flexDirection: "row", marginLeft: "40px", }}>
                   <BlueTitle
@@ -445,7 +432,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 type={"claim"}
                 title={"Claim!"}
                 onClick={handleClickOpen}
-                disable={available === "0"}
+                disable={available === "0" || isClaimed}
                 isIconVisible={false}
             />
         </Box>
