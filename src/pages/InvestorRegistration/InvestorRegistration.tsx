@@ -257,16 +257,14 @@ const InvestorRegistration = () => {
               .getRecentBlockhash("confirmed")
               .then(({ blockhash }) => {
                 console.log('blockhash = ', blockhash)
-                const bufferWalletKey = localStorage.getItem("publicKey");
-                console.log('bufferWalletKey transaction = ', bufferWalletKey)
+                const adminWalletKey = localStorage.getItem("publicKey");
+                console.log('adminWalletKey transaction = ', adminWalletKey)
                 transaction.recentBlockhash = blockhash;
-                transaction.feePayer = new PublicKey(bufferWalletKey!);
+                transaction.feePayer = new PublicKey(adminWalletKey!);
 
-                // !Проблема вот тут!!
                 window.solana
                     .signAndSendTransaction(transaction)
                     .then((sign: { signature: string }) => {
-                      // Сюда не доходит..
                       console.log("sign === ", sign);
 
                       connection

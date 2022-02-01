@@ -6,9 +6,9 @@ import {TokenVesting} from "token-vesting-api";
 const bigNumber = require("bignumber.js");
 
 const network: string = "https://api.devnet.solana.com";
-const pubKey: string = "78Teetgrte5kARqzgwqPDwktJ4N7hq6Z7cmuw48vQ1we";
-const mint: string = "HUnzfmBamK8Qdqt1tgsugfVYDA347wRGXvpzkzmQqRYT";
-const owner: string = "FeoRru9dKQzpctSZUkqnqn8UtkkyqPkUkMXzdBNTEQh";
+const pubKey: string = "6Rv4sVFXiGA23omYFyJeeyH6eJPmUhGY9PTrpadqip1w";
+const mint: string = "D8ygvWYPm8xwM9ajjfGcQRtzkMreBDir3uHDMmXShBwE";
+const owner: string = "D8ygvWYPm8xwM9ajjfGcQRtzkMreBDir3uHDMmXShBwE";
 
 export const getNetwork = (): string => {
     return network;
