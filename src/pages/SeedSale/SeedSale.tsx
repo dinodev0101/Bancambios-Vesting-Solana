@@ -123,7 +123,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                               console.log("sign === ", sign);
 
                               connection
-                                  .confirmTransaction(sign.signature)
+                                  .confirmTransaction(sign.signature, 'confirmed')
                                   .then((signature) => {
                                       console.log("signature", signature);
                                       handleClose();
