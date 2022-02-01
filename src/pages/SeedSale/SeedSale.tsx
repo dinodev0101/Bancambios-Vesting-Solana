@@ -167,7 +167,6 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         .getVestingType()
         .then((data) => {
           setVestingType(data);
-          setLoading(false);
         })
         .catch((e) => {
           console.log("getVestingType error === ", e);
@@ -176,6 +175,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         token
           .getVestingStatistic(newWalletKey)
           .then((data) => {
+            setLoading(false);
             setData(data);
             setValues({
               total: converterBN(data.allTokens),
@@ -187,6 +187,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           .catch((error: Error) => {
             if (error.message.includes("Vesting Account does not exist")) {
               setError(true);
+              setLoading(false);
             }
             console.log("getVestingStatistic error === ", error);
           });
