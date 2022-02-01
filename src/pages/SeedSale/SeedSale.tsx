@@ -215,9 +215,11 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   };
 
   const handleClose = () => {
-    setOpen(false);
-    setIsError(false);
-    setIsLoading(false);
+    if (!isLoading) {
+        setOpen(false);
+        setIsError(false);
+        setIsLoading(false);
+    }
   };
 
   const handleExit = () => {
