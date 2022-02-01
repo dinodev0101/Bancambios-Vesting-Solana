@@ -46,13 +46,14 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [newWalletKey, setNewWalletKey] = useState<PublicKey>();
   const [connection, setConnection] = useState<Connection>();
   const [token, setToken] = useState<TokenVesting>();
-  const [open, setOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOpenUnlocks, setIsOpenUnlocks] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenUnlocks, setIsOpenUnlocks] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isClaimed, setIsClaimed] = useState<boolean>(false);
   const [data, setData] = useState<VestingStatistic>();
   const [vestingType, setVestingType] = useState<VestingTypeAccount>();
   const [nextUnlockDate, setNextUnlockDate] = useState<string>("0");
@@ -124,9 +125,10 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                               console.log("sign === ", sign);
 
                               connection
-                                  .confirmTransaction(sign.signature)
+                                  .confirmTransaction(sign.signature, 'confirmed')
                                   .then((signature) => {
                                       console.log("signature", signature);
+                                      setIsClaimed(true);
                                       handleClose();
                                       handleOpen();
                                   })
@@ -166,7 +168,6 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         .getVestingType()
         .then((data) => {
           setVestingType(data);
-          setLoading(false);
         })
         .catch((e) => {
           console.log("getVestingType error === ", e);
@@ -175,6 +176,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         token
           .getVestingStatistic(newWalletKey)
           .then((data) => {
+            setLoading(false);
             setData(data);
             setValues({
               total: converterBN(data.allTokens),
@@ -186,6 +188,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           .catch((error: Error) => {
             if (error.message.includes("Vesting Account does not exist")) {
               setError(true);
+              setLoading(false);
             }
             console.log("getVestingStatistic error === ", error);
           });
@@ -214,9 +217,11 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   };
 
   const handleClose = () => {
-    setOpen(false);
-    setIsError(false);
-    setIsLoading(false);
+    if (!isLoading) {
+        setOpen(false);
+        setIsError(false);
+        setIsLoading(false);
+    }
   };
 
   const handleExit = () => {
@@ -428,7 +433,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 type={"claim"}
                 title={"Claim!"}
                 onClick={handleClickOpen}
-                disable={available === "0"}
+                disable={available === "0" || isClaimed}
                 isIconVisible={false}
             />
         </Box>
