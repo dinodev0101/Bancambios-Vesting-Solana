@@ -4,10 +4,10 @@ import {Connection, PublicKey} from "@solana/web3.js";
 import {TokenVesting} from "token-vesting-api";
 const bigNumber = require("bignumber.js");
 
-const network: string = "https://api.testnet.solana.com";
-const pubKey: string = "HLCCyk6MwqdgJcAgkK5FJGxbgY6CHUQTJAdKDn1wwEVw";
-const mint: string = "BGYjzXh6nkZgoTFyfqgY5KTZYFJLVTD5sZnzegUwnCLu";
-const owner: string = "FeoRru9dKQzpctSZUkqnqn8UtkkyqPkUkMXzdBNTEQh";
+const network: string = process.env.REACT_APP_NETWORK as string;
+const pubKey: string = process.env.REACT_APP_VESTING_PROGRAM_ID as string;
+const mint: string = process.env.REACT_APP_MINT as string;
+const owner: string = process.env.REACT_APP_OWNER as string;
 
 export const getNetwork = (): string => {
     return network;
