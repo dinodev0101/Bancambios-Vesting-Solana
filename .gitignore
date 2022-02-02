@@ -15,7 +15,9 @@
 # misc
 .idea*
 .DS_Store
-.env.local
+#.env.local
+#.env.main
+#.env.develop
 .env.development.local
 .env.test.local
 .env.production.local
