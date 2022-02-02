@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {BaseSyntheticEvent, useCallback, useEffect, useState} from "react";
 import { Box, InputLabel, MenuItem, FormControl, Typography, TextField, FormHelperText } from "@mui/material";
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import NumberFormat from 'react-number-format';
@@ -303,13 +303,12 @@ const InvestorRegistration = () => {
     }
   };
 
-  const handleSubmit = async (event: React.SyntheticEvent) => {
+  const handleSubmit = (e: BaseSyntheticEvent) => {
     if (!vestingType || !wallet || !tokens) return;
     setIsLoading(true);
     setOpen(true);
-    await sendTransaction();
-
-    event.preventDefault();
+    sendTransaction().then(() => {});
+    e.preventDefault();
   };
 
   return (

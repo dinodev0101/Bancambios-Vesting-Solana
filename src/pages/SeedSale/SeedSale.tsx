@@ -13,7 +13,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
-import {converterBN, getNextUnlockDate, getAllUnlocks, getTokenVesting, getNetwork, getPubKey} from "../../utils";
+import { converterBN, getNextUnlockDate, getAllUnlocks, getTokenVesting, getNetwork, getPubKey } from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
 import BN from "bn.js";
@@ -314,7 +314,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           </Box>
         </Box>
         <LinearProgressWithLabel
-          value={`${Math.round(Number(released) / Number(total) * 100))}`}
+          value={String(Math.round(Number(released) / Number(total) * 100))}
           topText={released + " BX"}
           topStickyText={total + " BX"}
           bottomText={moment(new Date()).format("L")} //current time
