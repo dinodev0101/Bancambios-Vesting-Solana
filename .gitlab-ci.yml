@@ -15,7 +15,7 @@ stages:
   - deploy
 
 # --- commit develop
-build-develop:
+build-main:
   stage: build
   before_script:
     - apk add binutils curl
@@ -32,7 +32,7 @@ build-develop:
     - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_REG_URL}
   script:
     - docker build
-        --build-arg APP_ENV_ARG="develop"
+        --build-arg APP_ENV_ARG="main"
       -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
     - docker rmi -f $IMAGE_NAME
@@ -41,7 +41,7 @@ build-develop:
   tags:
     - bc-exchange-gitlab-runner-01
 
-stand-01-develop:
+stand-01-main:
   stage: deploy
   image: williamyeh/ansible:ubuntu16.04
   script:
@@ -57,13 +57,13 @@ stand-01-develop:
     - chmod -R 755 .ansible && cd .ansible
     - ansible -m ping bc-bx-tge-stand-01-develop
     - ansible-playbook
-      -l develop
+      -l production
       -e aws_access_key_id=$AZ_AWS_ACCESS_KEY_ID
       -e aws_secret_access_key=$AZ_AWS_SECRET_ACCESS_KEY
       -e aws_region=$AWS_REGION
       -e aws_reg_url=$AWS_REG_URL
       -e image_name=$IMAGE_NAME
-      -e server=develop
+      -e server=main
       srm-vesting-fe.yml
   only:
     - main
