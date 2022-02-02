@@ -1,0 +1,20 @@
+.text_container {
+  padding-bottom: 50px;
+  padding-top: 50px;
+}
+
+.button_container {
+  display: flex;
+  justify-content: center;
+}
+
+.wallet_address {
+  background-color: #202124;
+  border-radius: 6px;
+}
+
+.wallet_container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 20px 0;
+}

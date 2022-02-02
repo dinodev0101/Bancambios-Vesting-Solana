@@ -1,0 +1,25 @@
+.logo {
+  position: absolute;
+  max-height: 150px;
+  max-width: 200px;
+  margin-top: -175px;
+}
+
+.text_container {
+  padding-bottom: 40px;
+  padding-top: 40px;
+}
+
+.text {
+  margin: 0;
+}
+
+.text_black {
+  margin: 0;
+}
+
+.button_container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
