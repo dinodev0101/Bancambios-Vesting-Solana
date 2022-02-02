@@ -13,7 +13,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
-import {converterBN, getNextUnlockDate, getAllUnlocks} from "../../utils";
+import { converterBN, getNextUnlockDate, getAllUnlocks, getTokenVesting, getNetwork, getPubKey } from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
 import BN from "bn.js";
@@ -30,11 +30,6 @@ interface IValues {
   available: string;
   claimed: string;
 }
-
-const network: string = "https://api.testnet.solana.com";
-const pubKey: string = "gFMPmX4ZLTPHLQEs2Y5VLo4LozHshqY3MVDC4d5oR8Z";
-const mint: string = "sd8doDLRpq9Yn4CB8Cbx2hnonUoTWycgWHBZ9ALRr6Z";
-const creator: string = "E4jis7AHiMxdgMsvK7S5YmHf4y4Kqneh9XY3VokRZdPV";
 
 const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [values, setValues] = useState<IValues>({
@@ -75,16 +70,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   useEffect(() => {
     const newWalletKey = localStorage.getItem("publicKey");
     newWalletKey && setNewWalletKey(new PublicKey(newWalletKey));
-    setConnection(new Connection(network));
-    setToken(
-      new TokenVesting(
-        new Connection(network),
-        new PublicKey(pubKey),
-        new PublicKey(mint),
-        new PublicKey(creator),
-        name
-      )
-    );
+    setConnection(new Connection(getNetwork()));
+    setToken(getTokenVesting(name));
     return () => {};
   }, [name]);
 
@@ -111,7 +98,6 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
               new WithdrawFromVestingInstruction(data.availableToWithdrawTokens)
           )
           .then((transaction) => {
-              console.log("withdrawFromVesting", transaction);
               connection
                   .getRecentBlockhash("confirmed")
                   .then(({ blockhash }) => {
@@ -121,12 +107,9 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                       window.solana
                           .signAndSendTransaction(transaction)
                           .then((sign: { signature: string }) => {
-                              console.log("sign === ", sign);
-
                               connection
                                   .confirmTransaction(sign.signature, 'confirmed')
                                   .then((signature) => {
-                                      console.log("signature", signature);
                                       setIsClaimed(true);
                                       handleClose();
                                       handleOpen();
@@ -250,7 +233,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           thickness={6}
           size={50}
         />
-        <Caption sx={{ p: 2 }} text={"Processing"} />
+        <Caption sx={{ p: 2 }} text="Processing" />
       </Box>
     );
   }
@@ -267,7 +250,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         }}
       >
         <BlueTitle
-          text={"You are not in this investor group."}
+          text="You are not in this investor group."
           isUpperCase={false}
         />
       </Box>
@@ -312,7 +295,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                   : ""
               }
             />
-            <Caption text={"First tokens unlocking date"} />
+            <Caption text="First tokens unlocking date" />
           </Box>
           <Box sx={{ paddingY: { xs: 1, md: 0 } }}>
               <Box sx={{display: "flex", flexDirection: "row", marginLeft: "40px", }}>
@@ -324,15 +307,14 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                   </IconButton>
               </Box>
               {new Date(nextUnlockDate) > new Date() ? (
-                  <Caption text={"Next tokens unlocking date"} />
+                  <Caption text="Next tokens unlocking date" />
               ) : (
-                  <Caption text={"Last tokens unlocking date"} />
+                  <Caption text="Last tokens unlocking date" />
               )}
           </Box>
         </Box>
         <LinearProgressWithLabel
           value={String(Math.round(Number(released) / Number(total) * 100))}
-          // value={50}
           topText={released + " BX"}
           topStickyText={total + " BX"}
           bottomText={moment(new Date()).format("L")} //current time
@@ -371,7 +353,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 width: { xs: 130, md: 160 },
               }}
             >
-              <Caption text={"Total Tokens Vested"} />
+              <Caption text="Total Tokens Vested" />
               <Heading
                 sx={{ textAlign: { xs: "center" } }}
                 text={total + " BX"}
@@ -384,7 +366,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 width: { xs: 130, md: 160 },
               }}
             >
-              <Caption text={"Tokens Released"} />
+              <Caption text="Tokens Released" />
               <Heading
                 text={released + " BX"}
                 sx={{ textAlign: { xs: "center" } }}
@@ -407,7 +389,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                 width: { xs: 130, md: 160 },
               }}
             >
-              <Caption text={"Tokens Claimed"} />
+              <Caption text="Tokens Claimed" />
               <Heading
                 sx={{ textAlign: { xs: "center" } }}
                 text={claimed + " BX"}
@@ -430,8 +412,8 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
         </Box>
         <Box sx={sxStyles.buttonContainer}>
             <ButtonComponent
-                type={"claim"}
-                title={"Claim!"}
+                type="claim"
+                title="Claim!"
                 onClick={handleClickOpen}
                 disable={available === "0" || isClaimed}
                 isIconVisible={false}
@@ -463,17 +445,17 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           }}
         >
             <Typography
-                variant={"body2"}
-                textAlign={"center"}
+                variant="body2"
+                textAlign="center"
             >
                 Program address:
             </Typography>
             <Typography
-                variant={"body2"}
-                textAlign={"center"}
+                variant="body2"
+                textAlign="center"
                 sx={{marginLeft: "8px", opacity: "0.75"}}
             >
-                {pubKey}
+                {getPubKey()}
             </Typography>
         </Box>
         <Box sx={{
@@ -484,14 +466,14 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
             flexWrap: "wrap",
         }}>
             <Typography
-                variant={"body2"}
-                textAlign={"center"}
+                variant="body2"
+                textAlign="center"
             >
                 Tokens are vested to:
             </Typography>
             <Typography
-                variant={"body2"}
-                textAlign={"center"}
+                variant="body2"
+                textAlign="center"
                 sx={{marginLeft: "8px", opacity: "0.75" }}
             >
                 {newWalletKey?.toString() ?? ""}
