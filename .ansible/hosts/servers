@@ -8,6 +8,7 @@ bc-bx-tge-stand-01-develop
 [stage]
 
 [production]
+bc-bx-tge-stand-01-develop
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
