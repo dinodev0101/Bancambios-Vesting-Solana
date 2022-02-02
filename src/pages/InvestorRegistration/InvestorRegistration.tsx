@@ -234,12 +234,10 @@ const InvestorRegistration = () => {
 
   const connectSolana = async () => {
     try {
-      if (window.solana) {
-        if (!window.solana.isConnected) {
+            if (window.solana && !window.solana.isConnected) {
           const key = await window.solana.connect();
           setAdminWalletKey(key.publicKey.toString());
         }
-      }
     } catch (error) {
       console.log("connectSolana error === ", error);
     }
@@ -259,23 +257,18 @@ const InvestorRegistration = () => {
               new CreateVestingAccountInstruction(new BN(tokens))
           )
           .then((transaction) => {
-            console.log("createVestingAccount", transaction);
             connection
                 .getRecentBlockhash("confirmed")
                 .then(({ blockhash }) => {
-                  console.log('blockhash = ', blockhash)
                   transaction.recentBlockhash = blockhash;
                   transaction.feePayer = new PublicKey(adminWalletKey);
 
                   window.solana
                       .signAndSendTransaction(transaction)
                       .then((sign: { signature: string }) => {
-                        console.log("sign === ", sign);
-
                         connection
                             .confirmTransaction(sign.signature, "confirmed")
                             .then((signature) => {
-                              console.log("signature", signature);
                               setIsError(false);
                               setIsLoading(false);
                             })
@@ -333,7 +326,7 @@ const InvestorRegistration = () => {
           alignItems: "center",
         }}>
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", padding: "16px" }}>
-            <Typography variant={"h2"} align={"center"}>
+            <Typography variant="h2" align="center">
               BX investor registration
             </Typography>
           </Box>
@@ -425,8 +418,8 @@ const InvestorRegistration = () => {
             </Box>
             <Box sx={sxStyles.buttonContainer}>
               <ButtonComponent
-                  type={"claim"}
-                  title={"Submit"}
+                  type="claim"
+                  title="Submit"
                   onClick={handleSubmit}
                   isIconVisible={false}
                   disable={error}

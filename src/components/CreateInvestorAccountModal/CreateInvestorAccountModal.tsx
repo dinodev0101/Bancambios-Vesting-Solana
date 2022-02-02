@@ -1,4 +1,4 @@
-import {Box, CircularProgress, Typography} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import React from "react";
 import ModalWrapper from "../ModalWrapper/ModalWrapper";
 import Caption from "../Title/Caption";
@@ -24,7 +24,7 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
     <ModalWrapper
       open={open}
       handleClose={handleClose}
-      title={"Creating new BX investor account"}
+      title="Creating new BX investor account"
     >
       {isError ? (
           <Box
@@ -37,7 +37,7 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
               }}
           >
             <FmdBadIcon sx={{ color: "rgb(183,82,230)", fontSize: 90, marginBottom: "10px", }} />
-            <Typography variant={"subtitle1"} align={"center"}>
+            <Typography variant="subtitle1" align="center">
               Sorry, investor's vesting account was not created. Try again later.
             </Typography>
           </Box>
@@ -55,7 +55,7 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
             thickness={6}
             size={50}
           />
-          <Caption sx={{ p: 2 }} text={"Processing"} />
+          <Caption sx={{ p: 2 }} text="Processing" />
         </Box>
       ) : (
           <Box
@@ -69,7 +69,7 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
               }}
           >
             <Box sx={{ p: { xs: 1, md: 3 } }}>
-              <Typography variant={"subtitle1"} align={"center"}>Investor's vesting account successfully created:</Typography>
+              <Typography variant="subtitle1" align="center">Investor's vesting account successfully created:</Typography>
               <Caption
                   sx={{
                     p: 1,
@@ -89,10 +89,10 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
             >
               <Box sx={{ width: "75%" }}>
                 <ButtonComponent
-                    type={"done"}
+                    type="done"
                     isIconVisible={false}
                     onClick={handleClose}
-                    title={"Done"}
+                    title="Done"
                 />
               </Box>
             </Box>

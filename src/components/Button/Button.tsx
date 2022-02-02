@@ -114,7 +114,7 @@ const ButtonComponent: FC<ButtonProps> = ({
 
   return (
       <div className={disable ? styles.button_disable_container : styles.button_container}>
-        <StyledButton type={"submit"} onClick={onClick} disabled={disable}>
+        <StyledButton type="submit" onClick={onClick} disabled={disable}>
             {isIconVisible && (
                 <img alt={"icon"} src={PhantomIcon} className={styles.icon} />
             )}
