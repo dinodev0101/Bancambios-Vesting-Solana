@@ -14,7 +14,7 @@ stages:
   - build
   - deploy
 
-# --- commit develop
+# --- commit main
 build-main:
   stage: build
   before_script:
