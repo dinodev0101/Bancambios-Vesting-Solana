@@ -31,8 +31,8 @@ RUN set -x && \
 
 # yarn build
 RUN set -x && \
-    # cp $HOME/.env.$APP_ENV $HOME/.env && \
-    # cat $HOME/.env && \
+    cp $HOME/.env.$APP_ENV $HOME/.env && \
+    cat $HOME/.env && \
     yarn build && \
     ls -la $HOME/build
 
