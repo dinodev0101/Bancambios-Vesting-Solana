@@ -1,10 +1,38 @@
-import { VestingSchedule } from "token-vesting-api/src/models";
+import {VestingSchedule} from "token-vesting-api/src/models";
 import BN from "bn.js";
+import {Connection, PublicKey} from "@solana/web3.js";
+import {TokenVesting} from "token-vesting-api";
 const bigNumber = require("bignumber.js");
 
+const network: string = "https://api.testnet.solana.com";
+const pubKey: string = "HLCCyk6MwqdgJcAgkK5FJGxbgY6CHUQTJAdKDn1wwEVw";
+const mint: string = "BGYjzXh6nkZgoTFyfqgY5KTZYFJLVTD5sZnzegUwnCLu";
+const owner: string = "FeoRru9dKQzpctSZUkqnqn8UtkkyqPkUkMXzdBNTEQh";
+
+export const getNetwork = (): string => {
+    return network;
+}
+
+export const getPubKey = (): string => {
+    return pubKey;
+}
+
+export const getTokenVesting = (
+    type: string,
+    creator: string = owner
+): TokenVesting => {
+    return new TokenVesting(
+        new Connection(network),
+        new PublicKey(pubKey),
+        new PublicKey(mint),
+        new PublicKey(creator),
+        type
+    );
+}
+
 export const converterBN = (number: { toString: () => string; }): string => (new bigNumber(number.toString())
-    // .dividedBy(LAMPORTS_PER_SOL)
-    .toString()
+        // .dividedBy(LAMPORTS_PER_SOL)
+        .toString()
 );
 
 export const getNextUnlockDate = (now: BN, schedule: VestingSchedule): string => {
