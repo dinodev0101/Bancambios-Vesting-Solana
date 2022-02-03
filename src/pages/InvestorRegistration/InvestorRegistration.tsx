@@ -190,7 +190,7 @@ const InvestorRegistration = () => {
         return null;
       }
     } catch (err) {
-      console.log('Checking wallet error: ', err);
+      // console.log('Checking wallet error: ', err);
       return null;
     }
   }
@@ -204,11 +204,15 @@ const InvestorRegistration = () => {
   };
 
   const handleFocusRemoving = async () => {
-    const checkedWallet = await checkWallet(wallet);
-    if (!checkedWallet) {
-      setError(true)
+    if (wallet) {
+      const checkedWallet = await checkWallet(wallet);
+      if (!checkedWallet) {
+        setError(true)
+      } else {
+        setError(false)
+      }
     } else {
-      setError(false)
+      setError(false);
     }
   }
 
@@ -228,7 +232,7 @@ const InvestorRegistration = () => {
   useEffect(() => {
     if (!vestingType || !adminWalletKey) return;
 
-    setVestingToken(getTokenVesting(vestingType, adminWalletKey));
+    setVestingToken(getTokenVesting(vestingType));
     setConnection(new Connection(getNetwork()));
   }, [vestingType, adminWalletKey]);
 
@@ -296,7 +300,7 @@ const InvestorRegistration = () => {
 );
 
   const handleClose = () => {
-    if (!isLoading) {
+    if (!isLoading || isError) {
       setOpen(false);
       setIsError(false);
       setIsLoading(false);
