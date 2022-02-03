@@ -18,14 +18,13 @@ export const getPubKey = (): string => {
 }
 
 export const getTokenVesting = (
-    type: string,
-    creator: string = owner
+    type: string
 ): TokenVesting => {
     return new TokenVesting(
         new Connection(network),
         new PublicKey(pubKey),
         new PublicKey(mint),
-        new PublicKey(creator),
+        new PublicKey(owner),
         type
     );
 }
