@@ -273,6 +273,7 @@ const InvestorRegistration = () => {
                         connection
                             .confirmTransaction(sign.signature, "confirmed")
                             .then((signature) => {
+                              console.log("signature = ", signature);
                               setIsError(false);
                               setIsLoading(false);
                             })
