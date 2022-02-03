@@ -21,6 +21,12 @@ export const getTokenVesting = (
     type: string,
     creator: string = owner
 ): TokenVesting => {
+
+    console.log('network = ', network);
+    console.log('vesting_program_id = ', pubKey);
+    console.log('mint = ', mint);
+    console.log('owner = ', owner);
+
     return new TokenVesting(
         new Connection(network),
         new PublicKey(pubKey),
