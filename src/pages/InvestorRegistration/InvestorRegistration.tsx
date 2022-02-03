@@ -190,7 +190,6 @@ const InvestorRegistration = () => {
         return null;
       }
     } catch (err) {
-      // console.log('Checking wallet error: ', err);
       return null;
     }
   }

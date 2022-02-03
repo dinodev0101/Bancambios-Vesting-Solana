@@ -71,7 +71,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
     const userWalletKey = localStorage.getItem("publicKey");
     userWalletKey && setNewWalletKey(new PublicKey(userWalletKey));
     setConnection(new Connection(getNetwork()));
-    setToken(getTokenVesting(name, userWalletKey!));
+    setToken(getTokenVesting(name));
     return () => {};
   }, [name]);
 
