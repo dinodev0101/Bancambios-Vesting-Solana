@@ -12,6 +12,7 @@ interface ClaimModalProps {
   isLoading: boolean;
   open: boolean;
   isError: boolean;
+  errorMessage: string;
   available: string;
 }
 
@@ -19,6 +20,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
   open,
   isLoading,
   isError,
+  errorMessage,
   available,
   handleClose,
   handleClaim,
@@ -41,7 +43,7 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
           >
             <FmdBadIcon sx={{ color: "rgb(183,82,230)", fontSize: 90, marginBottom: "10px", }} />
             <Typography variant={"subtitle1"} align={"center"}>
-              Sorry, your tokens were not claimed. Try again later.
+              Sorry, {errorMessage.toLowerCase()} Try again later.
             </Typography>
           </Box>
         ) : isLoading ? (

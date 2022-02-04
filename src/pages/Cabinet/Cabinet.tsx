@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 import SeedSale from "../SeedSale/SeedSale";
 import { useNavigate } from "react-router";
@@ -113,7 +113,6 @@ const Cabinet = () => {
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
-            // centered
             indicatorColor={"secondary"}
             variant="scrollable"
             allowScrollButtonsMobile
@@ -123,34 +122,16 @@ const Cabinet = () => {
               <Tab key={index} disableRipple sx={sxStyles.tab} label={type.label} />
             ))}
           </Tabs>
-          {/*<Divider />*/}
         </Box>
         <Box sx={{ minHeight: "414px", paddingX: { xs: 1, lg: 0 } }}>
-          <TabPanel index={0} value={value}>
-            <SeedSale name={vestingTypes[0].name} />
-          </TabPanel>
-          <TabPanel index={1} value={value}>
-            <SeedSale name={vestingTypes[1].name} />
-          </TabPanel>
-          <TabPanel index={2} value={value}>
-            <SeedSale name={vestingTypes[2].name} />
-          </TabPanel>
-          <TabPanel index={3} value={value}>
-            <SeedSale name={vestingTypes[3].name} />
-          </TabPanel>
-          <TabPanel index={4} value={value}>
-            <SeedSale name={vestingTypes[4].name} />
-          </TabPanel>
-          <TabPanel index={5} value={value}>
-            <SeedSale name={vestingTypes[5].name} />
-          </TabPanel>
-          <TabPanel index={6} value={value}>
-            <SeedSale name={vestingTypes[6].name} />
-          </TabPanel>
+          {vestingTypes.map((type,index) => (
+              <TabPanel key={index} index={index} value={value}>
+                <SeedSale name={type.name} />
+              </TabPanel>
+          ))}
         </Box>
       </Box>
     </Box>
-        // </div>
   );
 };
 

@@ -6,11 +6,13 @@ import ButtonComponent from "../Button/Button";
 
 interface CongratulationsModalProps {
   isOpen: boolean;
+  wallet: string;
   handleClose: () => void;
 }
 
 const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
   isOpen,
+  wallet,
   handleClose,
 }) => {
   return (
@@ -30,7 +32,9 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
         }}
       >
         <Box sx={{ p: { xs: 1, md: 3 } }}>
-          <Typography variant={"subtitle1"} align={"center"}>Claimed tokens have been sent to you wallet:</Typography>
+          <Typography variant={"subtitle1"} align={"center"}>
+              Claimed tokens have been sent to you wallet:
+          </Typography>
           <Caption
             sx={{
               p: 1,
@@ -38,7 +42,7 @@ const CongratulationsModal: React.FC<CongratulationsModalProps> = ({
               textOverflow: "ellipsis",
               overflow: "hidden",
             }}
-            text={"58rwAow1roHoeFeMCXv5b1xxoKAhkGPqZmrTLAUT84RD"}
+            text={wallet}
           />
         </Box>
         <Box
