@@ -46,6 +46,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [isOpenUnlocks, setIsOpenUnlocks] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [isClaimed, setIsClaimed] = useState<boolean>(false);
@@ -53,7 +54,6 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   const [vestingType, setVestingType] = useState<VestingTypeAccount>();
   const [nextUnlockDate, setNextUnlockDate] = useState<string>("0");
   const [allUnlocks, setAllUnlocks] = useState<Array<{date: string, tokens: string}>>([{date: "", tokens: ""}]);
-
 
   useEffect(() => {
       if (vestingType && data) {
@@ -67,24 +67,44 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   }, [vestingType, data])
 
 
-  useEffect(() => {
-    const userWalletKey = localStorage.getItem("publicKey");
-    userWalletKey && setNewWalletKey(new PublicKey(userWalletKey));
-    setConnection(new Connection(getNetwork()));
-    setToken(getTokenVesting(name));
-    return () => {};
-  }, [name]);
-
   const connectSolana = async () => {
     try {
       if (window.solana) {
         const key = await window.solana.connect();
+        localStorage.setItem("publicKey", key.publicKey.toString());
         setNewWalletKey(new PublicKey(key.publicKey.toString()));
       }
     } catch (error) {
+      setError(true);
+      setLoading(false);
       console.log("connectSolana error === ", error);
     }
   };
+
+useEffect(() => {
+    const interval = setInterval(async () => {
+        if (window.solana && window.solana?.publicKey) {
+            const solanaPubKey = window.solana.publicKey.toString();
+            const storagePubKey = localStorage.getItem("publicKey");
+
+            if (solanaPubKey === storagePubKey) {
+                !newWalletKey && setNewWalletKey(new PublicKey(solanaPubKey))
+            } else {
+                await connectSolana();
+            }
+        } else {
+            await connectSolana();
+        }
+    }, 1000);
+    return () => clearInterval(interval);
+}, [newWalletKey])
+
+    useEffect(() => {
+        if (newWalletKey) {
+            setConnection(new Connection(getNetwork()));
+            setToken(getTokenVesting(name));
+        }
+    }, [name, newWalletKey]);
 
   const claimTransaction = () => {
       newWalletKey &&
@@ -108,41 +128,37 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                           .signAndSendTransaction(transaction)
                           .then((sign: { signature: string }) => {
                               connection
-                                  .confirmTransaction(sign.signature, 'confirmed')
+                                  .confirmTransaction(sign.signature, "finalized")
                                   .then((signature) => {
+                                      console.log("signature = ", signature);
                                       setIsClaimed(true);
                                       handleClose();
                                       handleOpen();
                                   })
                                   .catch((e) => {
                                       console.log("signature", e);
+                                      setErrorMessage(e.message);
                                       setIsError(!isError);
                                   });
                           })
                           .catch((e: any) => {
                               console.log("test == ", e);
+                              setErrorMessage(e.message);
                               setIsError(!isError);
                           });
                   })
                   .catch((e) => {
                       console.log("hash", e);
+                      setErrorMessage(e.message);
                       setIsError(!isError);
                   });
           })
           .catch((e) => {
               console.log("withdrawFromVesting", e);
+              setErrorMessage(e.message);
               setIsError(!isError);
           });
   }
-
-  useEffect(() => {
-    const newWalletKey = localStorage.getItem("publicKey");
-    if (newWalletKey) {
-      setNewWalletKey(new PublicKey(newWalletKey));
-    } else {
-      connectSolana().then(() => {});
-    }
-  }, []);
 
   useEffect(() => {
     if (token) {
@@ -159,6 +175,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
           .getVestingStatistic(newWalletKey)
           .then((data) => {
             setLoading(false);
+            setError(false);
             setData(data);
             setValues({
               total: converterBN(data.allTokens),
@@ -199,7 +216,7 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
   };
 
   const handleClose = () => {
-    if (!isLoading) {
+    if (!isLoading || isError) {
         setOpen(false);
         setIsError(false);
         setIsLoading(false);
@@ -261,10 +278,18 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
     <>
       <ClaimModal
         available={data ? converterBN(data.availableToWithdrawTokens) : ""}
-        {...{ open, isError, isLoading, handleClose, handleClaim }}
+        {...{ open, isError, errorMessage, isLoading, handleClose, handleClaim }}
       />
-      <CongratulationsModal {...{ isOpen }} handleClose={handleExit} />
-      <UnlockTokensModal {...{ allUnlocks }} isOpen={isOpenUnlocks} handleUnlocksModal={handleUnlocksModal} />
+      <CongratulationsModal
+          {...{ isOpen }}
+          wallet={newWalletKey!.toString()}
+          handleClose={handleExit}
+      />
+      <UnlockTokensModal
+          {...{ allUnlocks }}
+          isOpen={isOpenUnlocks}
+          handleUnlocksModal={handleUnlocksModal}
+      />
       <Box
         sx={{
           width: "100%",
@@ -302,7 +327,10 @@ const SeedSale: React.FC<SeedSaleProps> = ({ name }) => {
                   <BlueTitle
                       text={nextUnlockDate}
                   />
-                  <IconButton sx={{'&:hover': {background: "grey"}}} onClick={handleUnlocksModal}>
+                  <IconButton
+                      sx={{'&:hover': {background: "grey"}}}
+                      onClick={handleUnlocksModal}
+                  >
                       <HelpIcon fontSize={"medium"} sx={{ color: "#FFFFFF" }}/>
                   </IconButton>
               </Box>

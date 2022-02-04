@@ -177,6 +177,7 @@ const InvestorRegistration = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
 
   const checkWallet = async (wallet: string) => {
@@ -186,7 +187,6 @@ const InvestorRegistration = () => {
       if (walletCheckWeb3) {
         return walletCheckWeb3;
       } else {
-        console.log('Checking wallet error: Wallet does not exist or activated');
         return null;
       }
     } catch (err) {
@@ -237,10 +237,11 @@ const InvestorRegistration = () => {
 
   const connectSolana = async () => {
     try {
-            if (window.solana && !window.solana.isConnected) {
+      if (window.solana && !window.solana.isConnected) {
           const key = await window.solana.connect();
+          localStorage.setItem("publicKey", key.publicKey.toString());
           setAdminWalletKey(key.publicKey.toString());
-        }
+      }
     } catch (error) {
       console.log("connectSolana error === ", error);
     }
@@ -278,21 +279,25 @@ const InvestorRegistration = () => {
                             })
                             .catch((e) => {
                               console.log("signature", e);
+                              setErrorMessage(e.message);
                               setIsError(true);
                             });
                       })
                       .catch((e: any) => {
                         console.log("test == ", e);
+                        setErrorMessage(e.message);
                         setIsError(true);
                       });
                 })
                 .catch((e) => {
                   console.log("hash", e);
+                  setErrorMessage(e.message);
                   setIsError(true);
                 });
           })
           .catch((e) => {
             console.log("createVestingAccount", e);
+            setErrorMessage(e.message);
             setIsError(true);
           });
     },
@@ -318,7 +323,7 @@ const InvestorRegistration = () => {
   return (
       <>
         <CreateInvestorAccountModal
-            {...{ open, isError, isLoading, handleClose, wallet }}
+            {...{ open, isError, errorMessage, isLoading, handleClose, wallet }}
         />
         <Box sx={{
           width: "100%",
@@ -389,7 +394,11 @@ const InvestorRegistration = () => {
                     fullWidth
                     label="Investor wallet"
                     id="investor-wallet-input"
-                    helperText={error ? "Incorrect wallet" : "Enter the investor's wallet"}
+                    helperText={
+                      error
+                          ? "Wallet does not exist or activated"
+                          : "Enter the investor's wallet"
+                    }
                     error={error}
                     onChange={handleChangeInvestorWallet}
                     onBlur={handleFocusRemoving}
