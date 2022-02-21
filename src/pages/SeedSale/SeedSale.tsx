@@ -138,25 +138,25 @@ useEffect(() => {
                                   .catch((e) => {
                                       console.log("signature", e);
                                       setErrorMessage(e.message);
-                                      setIsError(!isError);
+                                      setIsError(true);
                                   });
                           })
                           .catch((e: any) => {
                               console.log("test == ", e);
                               setErrorMessage(e.message);
-                              setIsError(!isError);
+                              setIsError(true);
                           });
                   })
                   .catch((e) => {
                       console.log("hash", e);
                       setErrorMessage(e.message);
-                      setIsError(!isError);
+                      setIsError(true);
                   });
           })
           .catch((e) => {
               console.log("withdrawFromVesting", e);
               setErrorMessage(e.message);
-              setIsError(!isError);
+              setIsError(true);
           });
   }
 
