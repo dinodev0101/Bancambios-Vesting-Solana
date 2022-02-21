@@ -192,7 +192,7 @@ useEffect(() => {
             console.log("getVestingStatistic error === ", error);
           });
     }
-  }, [newWalletKey, token]);
+  }, [newWalletKey, token, isOpen]);
 
 
   const handleClaim = async () => {
