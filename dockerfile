@@ -44,7 +44,7 @@ COPY --from=build /opt/srm-vesting-fe/build $HOME/build
 
 RUN set -x && \
     rm -rf /etc/nginx/conf.d/default.conf && \
-    cp $HOME/.build/.nginx/vesting-bx-app-develop.conf /etc/nginx/conf.d/vesting-bx-app-develop.conf && \
+    cp $HOME/.build/.nginx/srm-vesting-fe.conf /etc/nginx/conf.d/srm-vesting-fe.conf && \
     nginx -t && \
     ls -la $HOME/build
 
