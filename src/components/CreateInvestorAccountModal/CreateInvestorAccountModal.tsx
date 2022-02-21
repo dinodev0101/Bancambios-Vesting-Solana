@@ -10,6 +10,7 @@ interface CreateInvestorAccountModalProps {
   isLoading: boolean;
   open: boolean;
   isError: boolean;
+  errorMessage: string;
   wallet: string;
 }
 
@@ -17,6 +18,7 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
   open,
   isLoading,
   isError,
+  errorMessage,
   handleClose,
   wallet,
 }) => {
@@ -38,7 +40,7 @@ const CreateInvestorAccountModal: React.FC<CreateInvestorAccountModalProps> = ({
           >
             <FmdBadIcon sx={{ color: "rgb(183,82,230)", fontSize: 90, marginBottom: "10px", }} />
             <Typography variant="subtitle1" align="center">
-              Sorry, investor's vesting account was not created. Try again later.
+              Sorry, {errorMessage.toLowerCase()}. Try again later.
             </Typography>
           </Box>
         ) : isLoading ? (
