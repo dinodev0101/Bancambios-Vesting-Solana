@@ -1,8 +1,9 @@
-import {VestingSchedule , VestingTypeAccount} from "token-vesting-api/src/models";
+import {VestingSchedule} from "token-vesting-api/src/models";
 import BN from "bn.js";
 import {Connection, PublicKey, Transaction, SerializeConfig} from "@solana/web3.js";
 import {TokenVesting} from "token-vesting-api";
 import { CreateVestingAccountInstruction } from "token-vesting-api/dist/schema";
+import React from "react";
 const bigNumber = require("bignumber.js");
 
 const network: string = process.env.REACT_APP_NETWORK as string;
@@ -78,24 +79,20 @@ export const getAllUnlocks = (schedule: VestingSchedule, investor_tokens: BN): A
     return result;
 }
 
-// export const getVestingType = async (): Promise<VestingTypeAccount> => {
-//     const { account } = await getTokenVesting('ido').getVestingTypeAccountContext(null);
-//     return deserialize(
-//         generateSchemas([VestingTypeAccount]),
-//         VestingTypeAccount,
-//         (account as AccountInfo<Buffer>).data
-//     );
+// export const getVestingTypeAccount = async (vestingTypeName: string): Promise<VestingTypeAccount> => {
+//     return await getTokenVesting(vestingTypeName).getVestingType();
 // }
 
-export const availableTokenAmount = (vestingType: VestingTypeAccount): number => {
+export const availableTokenAmount = async (vestingTypeName: string): Promise<number> => {
+    const vestingTypeAccount = await getTokenVesting(vestingTypeName).getVestingType();
     let total = new BN(0);
-    for (let i = 0; i < vestingType.vesting_schedule?.vesting_count!; i++) {
+    for (let i = 0; i < vestingTypeAccount.vesting_schedule?.vesting_count!; i++) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         // @ts-ignore
-        total.iadd(vestingType.vesting_schedule?.vestings[i][0]);
+        total.iadd(vestingTypeAccount.vesting_schedule?.vestings[i][0]);
     }
-    return total.sub(vestingType?.locked_tokens_amount!).toNumber();
+    return total.sub(vestingTypeAccount?.locked_tokens_amount!).toNumber();
 }
 
 export const checkingVestingAccountExistence = async (vestingTypeName: string, investorWallet: string): Promise<boolean> => {
@@ -114,13 +111,8 @@ export const checkingWalletExistence = async (connection: Connection, wallet: st
     try {
         const pubKey = new PublicKey(wallet);
         const walletCheckWeb3 = await connection?.getAccountInfo(pubKey);
-        if (walletCheckWeb3) {
-            return true;
-        } else {
-            return false;
-        }
+        return !!walletCheckWeb3;
     } catch (err) {
-        console.log('ERROR = ', err)
         return false;
     }
 }
@@ -139,9 +131,10 @@ export const createVestingAccountTransactionsArray =
         vestingType: string,
         wallet: string,
         tokens: number
-    }[]): Promise<Transaction[]> => {
+    }[], setActualIndex:  React.Dispatch<React.SetStateAction<number>>): Promise<Transaction[]> => {
         let transactions: Transaction[] = [];
-        for (const investor of investors) {
+        for (const [index, investor] of investors.entries()) {
+            setActualIndex(index + 1);
             const vestingToken = getTokenVesting(investor.vestingType.toLowerCase());
             vestingToken.createVestingAccount(
                 new PublicKey(investor.wallet),
@@ -149,16 +142,14 @@ export const createVestingAccountTransactionsArray =
             ).then((transaction) => {
                 transactions.push(transaction);
             }).catch((e) => {
-                console.log("createVestingAccount", e);
+                console.error("createVestingAccount", e);
             });
-            await sleep(1500);
+            await sleep(2000);
         }
-        console.log(`transactions array =`, transactions);
         return transactions;
     };
 
 export const checkSizeAndConcatTransactions = async (transactions: Transaction[]): Promise<Transaction[]> => {
-    console.log('checkSizeAndConcatTransactions start...')
     let result: Transaction[] = [];
 
     const blockHash = await new Connection(getNetwork()).getRecentBlockhash("confirmed");
@@ -200,8 +191,6 @@ export const checkSizeAndConcatTransactions = async (transactions: Transaction[]
         concatTransaction.add(transactions[i])
     }
     result.push(concatTransaction);
-    console.log('checkSizeAndConcatTransactions result = ',result);
-    console.log('checkSizeAndConcatTransactions end...');
     return result;
 }
 

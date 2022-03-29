@@ -1,16 +1,20 @@
 import React, {BaseSyntheticEvent, useCallback, useEffect, useState} from "react";
-import { Box, Typography, TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import {Box, TextField, Typography} from "@mui/material";
+import {styled} from "@mui/material/styles";
 import ButtonComponent from "../../components/Button/Button";
-import {PublicKey, Connection, Transaction} from "@solana/web3.js";
+import {Connection, PublicKey, Transaction} from "@solana/web3.js";
 import {
   availableTokenAmount,
   checkingVestingAccountExistence,
-  checkingWalletExistence, checkSizeAndConcatTransactions,
+  checkingWalletExistence,
+  checkSizeAndConcatTransactions,
   createVestingAccountTransactionsArray,
-  getNetwork, sleep
+  getNetwork,
+  sleep
 } from "../../utils";
-import CreateInvestorAccountModal from "../../components/CreateInvestorAccountModal/CreateInvestorAccountModal";
+import InvestorsListRegistrationModal
+  from "../../components/InvestorsListRegistrationModal/InvestorsListRegistrationModal";
+import {ActionType} from "../../types";
 
 const vestingTypes = [
   {
@@ -96,23 +100,24 @@ const BootstrapTextField = styled(TextField)({
 });
 
 const InvestorsListRegistration = () => {
-  const [wallet, setWallet] = useState<string>('');
-  const [investorsList, setInvestorsList] = useState<string>('');
-  const [investorsListLength, setInvestorsListLength] = useState<number>(0);
+  const [investorsString, setInvestorsString] = useState<string>('');
+  const [totalInvestors, setTotalInvestors] = useState<number>(0);
   const [checkedInvestorList, setCheckedInvestorsList] = useState<{vestingType: string, wallet: string, tokens: number}[]>([]);
   const [vestingAccountExistList, setVestingAccountExistList] = useState<{vestingType: string, wallet: string, tokens: number}[]>([]);
   const [walletErrorList, setWalletErrorList] = useState<{vestingType: string, wallet: string, tokens: number}[]>([]);
+  const [notEnoughTokensList, setNotEnoughTokensList] = useState<{vestingType: string, wallet: string, tokens: number}[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [adminWalletKey, setAdminWalletKey] = useState<string>('');
   const [connection, setConnection] = useState<Connection>(new Connection(getNetwork()));
   const [open, setOpen] = useState<boolean>(false);
+  const [actionType, setActionType] = useState<ActionType>(ActionType.verification);
+  const [actualIndex, setActualIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [error, setError] = useState<boolean>(false);
 
   const handleChangeInvestorsList = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInvestorsList(event.target.value);
+    setInvestorsString(event.target.value);
   };
 
   useEffect(() => {
@@ -124,79 +129,62 @@ const InvestorsListRegistration = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (!vestingType || !adminWalletKey) return;
-  //
-  //   setVestingToken(getTokenVesting(vestingType));
-  //   setConnection(new Connection(getNetwork()));
-  // }, [vestingType, adminWalletKey]);
-
   const connectSolana = async () => {
-    console.log('1')
     try {
-      console.log('2')
       if (window.solana && !window.solana.isConnected) {
-        console.log('3')
           const key = await window.solana.connect();
           localStorage.setItem("publicKey", key.publicKey.toString());
           setAdminWalletKey(key.publicKey.toString());
-        console.log('4')
       }
     } catch (error) {
-      console.log("connectSolana error === ", error);
+      console.error("connectSolana error === ", error);
     }
   };
 
   const sendTransactions = useCallback(
       async () => {
         if (transactions) {
-          console.log('send Transaction transactions array =', transactions)
           await connectSolana();
           for (const [index, transaction] of transactions.entries()) {
+            setActualIndex(index + 1);
             try {
-              console.log('send Transaction index =', index)
-
               const {blockhash} = await connection.getRecentBlockhash("confirmed");
-              console.log('blockhash = ', blockhash)
-              console.log('adminWalletKey = ', adminWalletKey)
               transaction.recentBlockhash = blockhash;
               transaction.feePayer = new PublicKey(adminWalletKey);
 
-              console.log('send Transaction transaction =', transaction)
-
               const txHash = await window.solana.signAndSendTransaction(transaction);
 
-              console.log('Sign =', txHash)
+              await connection.confirmTransaction(txHash.signature, "confirmed");
 
-              const signature = await connection.confirmTransaction(txHash.signature, "confirmed");
-              console.log(`Transaction №${index} DONE!`)
               if (index === (transactions.length - 1)) {
-                console.log("signature = ", signature);
                 setIsError(false);
                 setIsLoading(false);
               }
             } catch (e:any) {
-              console.log("Transaction ERROR:", e);
-              setErrorMessage(e.message);
               setIsError(true);
+              setErrorMessage(e.message);
+              break;
             }
           }
         }
-    }, [transactions]);
-
-  const handleClose = () => {
-    if (!isLoading || isError) {
-      setOpen(false);
-      setIsError(false);
-      setIsLoading(false);
-    }
-  };
+    }, [transactions, adminWalletKey, connection]);
 
   const investorsListParsing = async (list: string) => {
     setConnection(new Connection(getNetwork()));
 
-    const parsedList: {vestingType: string, wallet: string, tokens: number}[] = list.split(/\r?\n/).reduce<{vestingType: string, wallet: string, tokens: number}[]>((acc, line) => {
+    const parsedList: {vestingType: string, wallet: string, tokens: number}[] =
+        list.split(/\r?\n/)
+            .reduce<{vestingType: string, wallet: string, tokens: number}[]>((acc, line) => {
       const comaSeparationList = line.split(',', 3);
+
+      if (comaSeparationList.length < 3) return acc;
+
+      for (const element of comaSeparationList) {
+        if (!element) {
+          return acc;
+        }
+      }
+
       const investor: { vestingType: string, wallet: string, tokens: number } =
           {
             vestingType: comaSeparationList[0],
@@ -207,72 +195,113 @@ const InvestorsListRegistration = () => {
       return acc;
     }, []);
 
-    console.log(parsedList.length);
-    setInvestorsListLength(parsedList.length);
+    if (parsedList.length > 0) {
+      setActionType(ActionType.verification);
+      setTotalInvestors(parsedList.length);
+      setOpen(true);
+      setIsLoading(true);
 
-    // for (const type of vestingTypes) {
-    //   type.availableTokens = availableTokenAmount(type.name);
-    // }
+      for (const type of vestingTypes) {
+        type.availableTokens = await availableTokenAmount(type.name);
+      }
 
-    for (const investor of parsedList) {
-      checkingVestingAccountExistence(investor.vestingType, investor.wallet).then(isAccountExist => {
-        if (isAccountExist) {
-          setVestingAccountExistList((prev) => {
-            return [...prev, investor];
-          });
-        } else {
-          checkingWalletExistence(connection, investor.wallet).then(isWalletActive => {
-            if (!isWalletActive) {
-              setWalletErrorList((prev) => {
-                return [...prev, investor];
-              });
-            } else {
-              setCheckedInvestorsList((prev) => {
-                return [...prev, investor];
-              });
-            }
-          })
-        }
-      })
-      await sleep(1500);
+      for (const [index, investor] of parsedList.entries()) {
+        setActualIndex(index + 1);
+        checkingVestingAccountExistence(investor.vestingType, investor.wallet).then(isAccountExist => {
+          if (isAccountExist) {
+            setVestingAccountExistList((prev) => {
+              return [...prev, investor];
+            });
+          } else {
+            checkingWalletExistence(connection, investor.wallet).then(isWalletActive => {
+              if (!isWalletActive) {
+                setWalletErrorList((prev) => {
+                  return [...prev, investor];
+                });
+              } else {
+                for (const type of vestingTypes) {
+                  if (investor.vestingType.toLowerCase() === type.name) {
+                    if (investor.tokens > type.availableTokens) {
+                      setNotEnoughTokensList((prev) => {
+                        return [...prev, investor];
+                      });
+                    } else {
+                      type.availableTokens -= investor.tokens;
+                      setCheckedInvestorsList((prev) => {
+                        return [...prev, investor];
+                      });
+                    }
+                  }
+                }
+              }
+            })
+          }
+        })
+        await sleep(1500);
+      }
     }
   };
 
   useEffect(() => {
-    console.log('useEffect.length = ', (checkedInvestorList.length + walletErrorList.length + vestingAccountExistList.length))
-    console.log('needed length = ', investorsListLength)
-    if (investorsListLength &&
-        (checkedInvestorList.length + walletErrorList.length +
-            vestingAccountExistList.length) === investorsListLength) {
-    console.log('checkedInvestorList.length = ', checkedInvestorList.length)
-    console.log('checkedInvestorList = ', checkedInvestorList)
-    console.log('walletErrorList = ', walletErrorList)
-    console.log('vestingAccountExistList = ', vestingAccountExistList)
-      createVestingAccountTransactionsArray(checkedInvestorList).then(async transactions => {
-        console.log('createVestingAccountTransactionsArray done = ', transactions);
-        const concatTransactions = await checkSizeAndConcatTransactions(transactions);
-        setTransactions(concatTransactions);
-      });
+    if (totalInvestors > 0 && (checkedInvestorList.length + walletErrorList.length +
+            vestingAccountExistList.length) === totalInvestors) {
+      if (checkedInvestorList.length === 0) {
+        setIsLoading(false);
+        setIsError(false);
+      } else {
+        setActionType(ActionType.createTransactions)
+        setActualIndex(1);
+        createVestingAccountTransactionsArray(checkedInvestorList, setActualIndex).then(async transactions => {
+          const concatTransactions = await checkSizeAndConcatTransactions(transactions);
+          setTransactions(concatTransactions);
+        });
+      }
     }
-  }, [checkedInvestorList, walletErrorList, vestingAccountExistList, investorsListLength])
+  }, [checkedInvestorList, walletErrorList, vestingAccountExistList, notEnoughTokensList, totalInvestors])
 
   useEffect(() => {
    if (transactions.length > 0) {
-     console.log('Send transactions ...')
+     setActionType(ActionType.sendTransactions);
+     setActualIndex( 1);
      sendTransactions().then(() => {});
    }
-  }, [transactions])
+  }, [transactions, sendTransactions])
 
   const handleSubmit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    console.log(investorsList)
-    await investorsListParsing(investorsList);
+    await investorsListParsing(investorsString);
+  };
+
+  const handleClose = () => {
+    if (!isLoading || isError) {
+      setOpen(false);
+      setIsLoading(false);
+      setIsError(false);
+      setErrorMessage('');
+      setCheckedInvestorsList([]);
+      setVestingAccountExistList([]);
+      setWalletErrorList([]);
+      setNotEnoughTokensList([]);
+      setTotalInvestors(0);
+      setTransactions([]);
+    }
   };
 
   return (
       <>
-        <CreateInvestorAccountModal
-            {...{ open, isError, errorMessage, isLoading, handleClose, wallet }}
+        <InvestorsListRegistrationModal
+            {...{
+              actualIndex, open, isError, errorMessage, isLoading, handleClose, checkedInvestorList,
+              vestingAccountExistList, walletErrorList, notEnoughTokensList
+            }}
+            action={actionType}
+            totalAmount={
+              actionType === ActionType.verification
+                ? totalInvestors
+                : actionType === ActionType.createTransactions
+                ? checkedInvestorList.length
+                : transactions.length
+            }
         />
         <Box sx={{
           width: "100%",
@@ -325,7 +354,7 @@ const InvestorsListRegistration = () => {
                   title="Submit"
                   onClick={handleSubmit}
                   isIconVisible={false}
-                  disable={error}
+                  disable={!investorsString}
               />
             </Box>
           </form>
