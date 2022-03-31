@@ -39,6 +39,10 @@ const vestingTypes = [
     label: "Team",
     name: "team-operations-developers",
   },
+  {
+    label: "Test",
+    name: "test2",
+  },
 ]
 
 function TabPanel(props: TabPanelProps) {

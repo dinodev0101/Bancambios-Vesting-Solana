@@ -45,6 +45,10 @@ const vestingTypes = [
     label: "Team",
     name: "team-operations-developers",
   },
+  {
+    label: "Test",
+    name: "test2",
+  },
 ]
 
 const BootstrapFormControl = styled(FormControl)(({ theme }) => ({
