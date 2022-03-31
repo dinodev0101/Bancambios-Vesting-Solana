@@ -45,6 +45,10 @@ const vestingTypes = [
     name: "team-operations-developers",
     availableTokens: 0,
   },
+  {
+    name: "test2",
+    availableTokens: 0,
+  },
 ]
 
 const BootstrapTextField = styled(TextField)({
