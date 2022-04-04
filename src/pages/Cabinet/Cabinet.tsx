@@ -12,16 +12,12 @@ interface TabPanelProps {
 
 const vestingTypes = [
   {
-    label: "Strategic",
-    name: "strategic-partners",
+    label: "Seed",
+    name: "seed",
   },
   {
-    label: "Pre-Sale",
-    name: "pre-sale",
-  },
-  {
-    label: "IDO",
-    name: "ido",
+    label: "BocaChica",
+    name: "boca-chica",
   },
   {
     label: "Community",
