@@ -18,7 +18,7 @@ import {ActionType} from "../../types";
 
 const vestingTypes = [
   {
-    name: "strategic-partners",
+    name: "strategic",
     availableTokens: 0,
   },
   {
@@ -43,10 +43,6 @@ const vestingTypes = [
   },
   {
     name: "team-operations-developers",
-    availableTokens: 0,
-  },
-  {
-    name: "test2",
     availableTokens: 0,
   },
 ]

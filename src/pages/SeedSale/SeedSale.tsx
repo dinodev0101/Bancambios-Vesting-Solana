@@ -130,7 +130,6 @@ useEffect(() => {
                               connection
                                   .confirmTransaction(sign.signature, "finalized")
                                   .then((signature) => {
-                                      console.log("signature = ", signature);
                                       setIsClaimed(true);
                                       handleClose();
                                       handleOpen();

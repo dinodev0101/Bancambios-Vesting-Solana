@@ -13,7 +13,7 @@ interface TabPanelProps {
 const vestingTypes = [
   {
     label: "Strategic",
-    name: "strategic-partners",
+    name: "strategic",
   },
   {
     label: "Pre-Sale",
@@ -38,10 +38,6 @@ const vestingTypes = [
   {
     label: "Team",
     name: "team-operations-developers",
-  },
-  {
-    label: "Test",
-    name: "test2",
   },
 ]
 
