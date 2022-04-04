@@ -36,7 +36,6 @@ export const getTokenVesting = (
 }
 
 export const converterBN = (number: { toString: () => string; }): string => (new bigNumber(number.toString())
-        // .dividedBy(LAMPORTS_PER_SOL)
         .toString()
 );
 
@@ -79,10 +78,6 @@ export const getAllUnlocks = (schedule: VestingSchedule, investor_tokens: BN): A
     return result;
 }
 
-// export const getVestingTypeAccount = async (vestingTypeName: string): Promise<VestingTypeAccount> => {
-//     return await getTokenVesting(vestingTypeName).getVestingType();
-// }
-
 export const availableTokenAmount = async (vestingTypeName: string): Promise<number> => {
     const vestingTypeAccount = await getTokenVesting(vestingTypeName).getVestingType();
     let total = new BN(0);
@@ -116,15 +111,6 @@ export const checkingWalletExistence = async (connection: Connection, wallet: st
         return false;
     }
 }
-
-// export const checkingTokensAvailability =
-//     async (investors: {
-//         vestingType: string,
-//         wallet: string,
-//         tokens: number
-//     }[]): Promise<boolean> => {
-//
-// }
 
 export const createVestingAccountTransactionsArray =
     async (investors: {
