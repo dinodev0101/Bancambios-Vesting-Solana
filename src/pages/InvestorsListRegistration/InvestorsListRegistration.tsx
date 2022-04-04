@@ -241,7 +241,7 @@ const InvestorsListRegistration = () => {
             })
           }
         })
-        await sleep(1500);
+        await sleep(2000);
       }
     }
   };
