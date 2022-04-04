@@ -1,10 +1,10 @@
 import {VestingSchedule} from "token-vesting-api/src/models";
-import BN from "bn.js";
 import {Connection, PublicKey, Transaction, SerializeConfig} from "@solana/web3.js";
 import {TokenVesting} from "token-vesting-api";
 import { CreateVestingAccountInstruction } from "token-vesting-api/dist/schema";
 import React from "react";
 const bigNumber = require("bignumber.js");
+const BN = require('bn.js');
 
 const network: string = process.env.REACT_APP_NETWORK as string;
 const pubKey: string = process.env.REACT_APP_VESTING_PROGRAM_ID as string;
@@ -36,11 +36,10 @@ export const getTokenVesting = (
 }
 
 export const converterBN = (number: { toString: () => string; }): string => (new bigNumber(number.toString())
-        // .dividedBy(LAMPORTS_PER_SOL)
         .toString()
 );
 
-export const getNextUnlockDate = (now: BN, schedule: VestingSchedule): string => {
+export const getNextUnlockDate = (now: typeof BN, schedule: VestingSchedule): string => {
     let i = 0;
 
     for (; i < schedule.vesting_count!; i+=1) {
@@ -56,7 +55,7 @@ export const getNextUnlockDate = (now: BN, schedule: VestingSchedule): string =>
     return schedule.vestings![i][1].start_time.add(schedule.vestings![i][1].unlock_period.muln(j)).toString();
 }
 
-export const getAllUnlocks = (schedule: VestingSchedule, investor_tokens: BN): Array<{ date: string, tokens: string }> => {
+export const getAllUnlocks = (schedule: VestingSchedule, investor_tokens: typeof BN): Array<{ date: string, tokens: string }> => {
     let result: any[] = [];
 
     for (let i = 0; i < schedule.vesting_count!; i += 1) {
@@ -78,10 +77,6 @@ export const getAllUnlocks = (schedule: VestingSchedule, investor_tokens: BN): A
     }
     return result;
 }
-
-// export const getVestingTypeAccount = async (vestingTypeName: string): Promise<VestingTypeAccount> => {
-//     return await getTokenVesting(vestingTypeName).getVestingType();
-// }
 
 export const availableTokenAmount = async (vestingTypeName: string): Promise<number> => {
     const vestingTypeAccount = await getTokenVesting(vestingTypeName).getVestingType();
@@ -116,15 +111,6 @@ export const checkingWalletExistence = async (connection: Connection, wallet: st
         return false;
     }
 }
-
-// export const checkingTokensAvailability =
-//     async (investors: {
-//         vestingType: string,
-//         wallet: string,
-//         tokens: number
-//     }[]): Promise<boolean> => {
-//
-// }
 
 export const createVestingAccountTransactionsArray =
     async (investors: {

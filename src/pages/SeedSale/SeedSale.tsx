@@ -16,9 +16,9 @@ import ClaimModal from "../../components/ClaimModal/ClaimModal";
 import { converterBN, getNextUnlockDate, getAllUnlocks, getTokenVesting, getNetwork, getPubKey } from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
-import BN from "bn.js";
 import ButtonComponent from "../../components/Button/Button";
 import UnlockTokensModal from "../../components/UnlockTokensModal/UnlockTokensModal";
+const BN = require('bn.js');
 
 interface SeedSaleProps {
   name: string;
@@ -129,8 +129,7 @@ useEffect(() => {
                           .then((sign: { signature: string }) => {
                               connection
                                   .confirmTransaction(sign.signature, "finalized")
-                                  .then((signature) => {
-                                      console.log("signature = ", signature);
+                                  .then(() => {
                                       setIsClaimed(true);
                                       handleClose();
                                       handleOpen();

@@ -8,8 +8,8 @@ import { PublicKey, Connection } from "@solana/web3.js";
 import { getNetwork, getTokenVesting} from "../../utils";
 import { TokenVesting } from "token-vesting-api";
 import { CreateVestingAccountInstruction } from "token-vesting-api/dist/schema";
-import BN from "bn.js";
 import CreateInvestorAccountModal from "../../components/CreateInvestorAccountModal/CreateInvestorAccountModal";
+const BN = require('bn.js');
 
 interface CustomProps {
   onChange: (event: { target: { name: string; value: string } }) => void;
@@ -18,16 +18,12 @@ interface CustomProps {
 
 const vestingTypes = [
   {
-    label: "Strategic",
-    name: "strategic-partners",
+    label: "Seed",
+    name: "seed",
   },
   {
-    label: "Pre-Sale",
-    name: "pre-sale",
-  },
-  {
-    label: "IDO",
-    name: "ido",
+    label: "BocaChica",
+    name: "boca-chica",
   },
   {
     label: "Community",
@@ -44,10 +40,6 @@ const vestingTypes = [
   {
     label: "Team",
     name: "team-operations-developers",
-  },
-  {
-    label: "Test",
-    name: "test2",
   },
 ]
 
@@ -276,8 +268,7 @@ const InvestorRegistration = () => {
                       .then((sign: { signature: string }) => {
                         connection
                             .confirmTransaction(sign.signature, "confirmed")
-                            .then((signature) => {
-                              console.log("signature = ", signature);
+                            .then(() => {
                               setIsError(false);
                               setIsLoading(false);
                             })

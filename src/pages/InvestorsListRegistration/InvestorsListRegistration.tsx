@@ -18,15 +18,11 @@ import {ActionType} from "../../types";
 
 const vestingTypes = [
   {
-    name: "strategic-partners",
+    name: "seed",
     availableTokens: 0,
   },
   {
-    name: "pre-sale",
-    availableTokens: 0,
-  },
-  {
-    name: "ido",
+    name: "boca-chica",
     availableTokens: 0,
   },
   {
@@ -43,10 +39,6 @@ const vestingTypes = [
   },
   {
     name: "team-operations-developers",
-    availableTokens: 0,
-  },
-  {
-    name: "test2",
     availableTokens: 0,
   },
 ]
