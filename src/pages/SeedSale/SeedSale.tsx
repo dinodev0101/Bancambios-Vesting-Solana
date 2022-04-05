@@ -13,7 +13,14 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
-import { converterBN, getNextUnlockDate, getAllUnlocks, getTokenVesting, getNetwork, getPubKey } from "../../utils";
+import {
+    getNextUnlockDate,
+    getAllUnlocks,
+    getTokenVesting,
+    getNetwork,
+    getPubKey,
+    converterFromBX
+} from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
 import ButtonComponent from "../../components/Button/Button";
@@ -177,10 +184,10 @@ useEffect(() => {
             setError(false);
             setData(data);
             setValues({
-              total: converterBN(data.allTokens),
-              released: converterBN(data.unlockedTokens),
-              available: converterBN(data.availableToWithdrawTokens),
-              claimed: converterBN(data.withdrawn_tokens),
+              total: converterFromBX(data.allTokens),
+              released: converterFromBX(data.unlockedTokens),
+              available: converterFromBX(data.availableToWithdrawTokens),
+              claimed: converterFromBX(data.withdrawn_tokens),
             });
           })
           .catch((error: Error) => {
@@ -276,7 +283,7 @@ useEffect(() => {
   return (
     <>
       <ClaimModal
-        available={data ? converterBN(data.availableToWithdrawTokens) : ""}
+        available={data ? converterFromBX(data.availableToWithdrawTokens) : ""}
         {...{ open, isError, errorMessage, isLoading, handleClose, handleClaim }}
       />
       <CongratulationsModal

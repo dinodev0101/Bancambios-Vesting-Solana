@@ -35,7 +35,15 @@ export const getTokenVesting = (
     );
 }
 
-export const converterBN = (number: { toString: () => string; }): string => (new bigNumber(number.toString())
+export const converterFromBX = (number: { toString: () => string; }): string => (
+    new bigNumber(number.toString())
+        .dividedBy(new bigNumber(process.env.REACT_APP_DECIMALS as string))
+        .toString()
+);
+
+export const converterToBX = (number: { toString: () => string; }): string => (
+    new bigNumber(number.toString())
+        .multipliedBy(new bigNumber(process.env.REACT_APP_DECIMALS as string))
         .toString()
 );
 
@@ -87,7 +95,7 @@ export const availableTokenAmount = async (vestingTypeName: string): Promise<num
         // @ts-ignore
         total.iadd(vestingTypeAccount.vesting_schedule?.vestings[i][0]);
     }
-    return total.sub(vestingTypeAccount?.locked_tokens_amount!).toNumber();
+    return Number(converterFromBX(total.sub(vestingTypeAccount?.locked_tokens_amount!).toString()));
 }
 
 export const checkingVestingAccountExistence = async (vestingTypeName: string, investorWallet: string): Promise<boolean> => {
@@ -124,7 +132,7 @@ export const createVestingAccountTransactionsArray =
             const vestingToken = getTokenVesting(investor.vestingType.toLowerCase());
             vestingToken.createVestingAccount(
                 new PublicKey(investor.wallet),
-                new CreateVestingAccountInstruction(new BN(investor.tokens))
+                new CreateVestingAccountInstruction(new BN(converterToBX(investor.tokens)))
             ).then((transaction) => {
                 transactions.push(transaction);
             }).catch((e) => {

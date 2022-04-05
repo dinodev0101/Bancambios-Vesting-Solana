@@ -21,10 +21,10 @@ const vestingTypes = [
     name: "seed",
     availableTokens: 0,
   },
-  {
-    name: "boca-chica",
-    availableTokens: 0,
-  },
+  // {
+  //   name: "boca-chica",
+  //   availableTokens: 0,
+  // },
   {
     name: "community-dev-marketing",
     availableTokens: 0,
@@ -240,7 +240,7 @@ const InvestorsListRegistration = () => {
 
   useEffect(() => {
     if (totalInvestors > 0 && (checkedInvestorList.length + walletErrorList.length +
-            vestingAccountExistList.length) === totalInvestors) {
+            vestingAccountExistList.length + notEnoughTokensList.length) === totalInvestors) {
       if (checkedInvestorList.length === 0) {
         setIsLoading(false);
         setIsError(false);
