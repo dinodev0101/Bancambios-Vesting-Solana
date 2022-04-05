@@ -3,6 +3,8 @@ import { field } from "@solvei/borsh/schema";
 import BigNumber from "bignumber.js";
 import BN from "bn.js";
 
+exports.Buffer = Buffer;
+
 const PublicKeyCreator = {
   serialize: (value: PublicKey, writer: any) => {
     writer.writeU256(new BN(value.encode(), 16, "be"));
@@ -14,12 +16,45 @@ const PublicKeyCreator = {
   },
 };
 
+function numberToBytes(number: number): Buffer {
+  // you can use constant number of bytes by using 8 or 4
+  // const len = Math.ceil(Math.log2(number+1) / 8);
+  if (!Number.isInteger(number)) throw "Non integers are not supported";
+  const byteArray = new Uint8Array(8);
+
+  for (let index = 0; index < byteArray.length; index++) {
+    const byte = number & 0xff;
+    byteArray[index] = byte;
+    number = (number - byte) / 256;
+  }
+
+  return Buffer.from(byteArray);
+}
+
+export const TokenCountCreator = { 
+  serialize: (value: number, writer: any) => {
+    if (value.toString() != parseInt(value.toString()).toString())
+      throw "Could not serialize BN";
+    writer.writeBuffer(numberToBytes(parseInt(value.toString())));
+  },
+  deserialize: (reader: any): number => {
+    let n = 0;
+    for (let i = 0; i< 8; i+=1) {
+      n = n*256 + reader.readU8();
+    }
+    return n;
+  }
+}
+
 export const VestingsCreator = { 
   serialize: (value: Array<[BN, LinearVesting]>, writer: any) => {
     if (value.length > MAX_VESTINGS) 
         throw new Error("Too many vestings in schedule");
     for (let i = 0; i < value.length; i+=1) {
-        writer.writeU64(value[i][0]);
+        if (value[i][0].toString() != parseInt(value[i][0].toString()).toString())
+          throw "Could not serialize BN";
+        writer.writeBuffer(numberToBytes(parseInt(value[i][0].toString())));
+
         writer.writeU64(value[i][1].start_time);
         writer.writeU64(value[i][1].unlock_period);
         writer.writeU8(value[i][1].unlock_count);
@@ -104,10 +139,6 @@ export class VestingSchedule {
     this.token_count = token_count;
     this.vesting_count = vestings === undefined ? undefined : vestings.length;
     this.vestings = vestings;
-  }
-
-  public static with_tokens(tokens: BN): ScheduleBuilder {
-    return new ScheduleBuilder(tokens);
   }
 
   public calculateUnlockedPart(now: BN): BigNumber {
@@ -282,8 +313,7 @@ export class ScheduleBuilder {
 
     public build(): VestingSchedule | undefined {
         if (!this.token_count.eq(this.used_tokens)) {
-          console.log(`Error: unused tokens. Total: ${this.token_count} Used: ${this.used_tokens}`)
-          return undefined;
+          console.log(`Warning: unused tokens. Total: ${this.token_count} Used: ${this.used_tokens}`)
             // return Err(ScheduleBuilderError::InvalidTokenAmountUsed((
             //     this.token_count,
             //     this.used_tokens,

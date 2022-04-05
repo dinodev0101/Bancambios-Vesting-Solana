@@ -5,7 +5,7 @@ import NumberFormat from 'react-number-format';
 import { styled } from "@mui/material/styles";
 import ButtonComponent from "../../components/Button/Button";
 import { PublicKey, Connection } from "@solana/web3.js";
-import { getNetwork, getTokenVesting} from "../../utils";
+import {converterToBX, getNetwork, getTokenVesting} from "../../utils";
 import { TokenVesting } from "token-vesting-api";
 import { CreateVestingAccountInstruction } from "token-vesting-api/dist/schema";
 import CreateInvestorAccountModal from "../../components/CreateInvestorAccountModal/CreateInvestorAccountModal";
@@ -254,7 +254,7 @@ const InvestorRegistration = () => {
       vestingToken
           .createVestingAccount(
               new PublicKey(wallet),
-              new CreateVestingAccountInstruction(new BN(tokens))
+              new CreateVestingAccountInstruction(new BN(converterToBX(tokens)))
           )
           .then((transaction) => {
             connection
