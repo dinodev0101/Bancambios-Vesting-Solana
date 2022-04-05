@@ -1,12 +1,12 @@
 import { field, generateSchemas, variant } from "@solvei/borsh/schema";
 import BN from "bn.js";
-import {VestingsCreator, LinearVesting} from "./models"
+import {VestingsCreator, TokenCountCreator, LinearVesting} from "./models"
 
 class Super {}
 
 @variant(0)
 export class CreateVestingTypeInstruction extends Super {
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public token_count: number;
 
   @field({ type: "u8" })
@@ -29,7 +29,7 @@ export class CreateVestingTypeInstruction extends Super {
 
 @variant(1)
 export class CreateVestingAccountInstruction extends Super {
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public amount: BN;
 
   constructor(amount: BN) {
@@ -39,7 +39,7 @@ export class CreateVestingAccountInstruction extends Super {
 }
 @variant(2)
 export class WithdrawFromVestingInstruction extends Super {
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public amount: BN;
 
   constructor(amount: BN) {
@@ -50,7 +50,7 @@ export class WithdrawFromVestingInstruction extends Super {
 
 @variant(3)
 export class WithdrawExcessiveFromPoolInstruction extends Super {
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public amount: BN;
 
   constructor(amount: BN) {
@@ -61,7 +61,7 @@ export class WithdrawExcessiveFromPoolInstruction extends Super {
 
 @variant(4)
 export class ChangeVestingTypeScheduleInstruction extends Super {
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public token_count: number;
 
   @field({ type: "u8" })
