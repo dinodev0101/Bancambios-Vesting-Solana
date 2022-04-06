@@ -21,10 +21,10 @@ const vestingTypes = [
     name: "seed",
     availableTokens: 0,
   },
-  // {
-  //   name: "boca-chica",
-  //   availableTokens: 0,
-  // },
+  {
+    name: "boca-chica",
+    availableTokens: 0,
+  },
   {
     name: "community-dev-marketing",
     availableTokens: 0,
