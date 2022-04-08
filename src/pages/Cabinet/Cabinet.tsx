@@ -20,6 +20,10 @@ const vestingTypes = [
     name: "boca-chica",
   },
   {
+    label: "BocaChica-2",
+    name: "boca-chica-2",
+  },
+  {
     label: "Community",
     name: "community-dev-marketing",
   },

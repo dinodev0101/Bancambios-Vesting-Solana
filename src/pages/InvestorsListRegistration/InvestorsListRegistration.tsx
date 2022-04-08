@@ -26,6 +26,10 @@ const vestingTypes = [
     availableTokens: 0,
   },
   {
+    name: "boca-chica-2",
+    availableTokens: 0,
+  },
+  {
     name: "community-dev-marketing",
     availableTokens: 0,
   },
