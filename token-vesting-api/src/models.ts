@@ -1,24 +1,23 @@
 import {  PublicKey } from "@solana/web3.js";
 import { field } from "@solvei/borsh/schema";
+import { BinaryReader, BinaryWriter } from "@solvei/borsh/binary";
 import BigNumber from "bignumber.js";
 import BN from "bn.js";
 
 exports.Buffer = Buffer;
 
 const PublicKeyCreator = {
-  serialize: (value: PublicKey, writer: any) => {
-    writer.writeU256(new BN(value.encode(), 16, "be"));
+  serialize: (value: PublicKey, writer: BinaryWriter) => {
+    writer.writeU256(new BN(value.encode(), 32, "be"));
   },
-  deserialize: (reader: any): PublicKey => {
+  deserialize: (reader: BinaryReader): PublicKey => {
     let value = reader.readU256();
-    let buffer = value.toArrayLike(Buffer, "be");
+    let buffer = value.toArrayLike(Buffer, "be", 32);
     return PublicKey.decode(buffer);
   },
 };
 
-function numberToBytes(number: number): Buffer {
-  // you can use constant number of bytes by using 8 or 4
-  // const len = Math.ceil(Math.log2(number+1) / 8);
+function numberToBytes(number: number): Uint8Array {
   if (!Number.isInteger(number)) throw "Non integers are not supported";
   const byteArray = new Uint8Array(8);
 
@@ -28,27 +27,29 @@ function numberToBytes(number: number): Buffer {
     number = (number - byte) / 256;
   }
 
-  return Buffer.from(byteArray);
+  return byteArray;
 }
 
-export const TokenCountCreator = { 
-  serialize: (value: number, writer: any) => {
+export const TokenCountCreator = {
+  serialize: (value: BN, writer: BinaryWriter) => {
     if (value.toString() != parseInt(value.toString()).toString())
       throw "Could not serialize BN";
-    writer.writeBuffer(numberToBytes(parseInt(value.toString())));
+    writer.writeFixedArray(numberToBytes(parseInt(value.toString())));
   },
-  deserialize: (reader: any): number => {
+  deserialize: (reader: BinaryReader): BN => {
     let n = 0;
-    for (let i = 0; i< 8; i+=1) {
-      n = n*256 + reader.readU8();
+    let mutltiplier = 1;
+    for (let i = 0; i < 8; i+=1) {
+      n += reader.readU8() * mutltiplier;
+      mutltiplier *= 256;
     }
-    return n;
+    return new BN(n.toString());
   }
 }
 
-export const VestingsCreator = { 
+export const VestingsCreator = {
   serialize: (value: Array<[BN, LinearVesting]>, writer: any) => {
-    if (value.length > MAX_VESTINGS) 
+    if (value.length > MAX_VESTINGS)
         throw new Error("Too many vestings in schedule");
     for (let i = 0; i < value.length; i+=1) {
         if (value[i][0].toString() != parseInt(value[i][0].toString()).toString())
@@ -126,7 +127,7 @@ export class LinearVesting {
 export const MAX_VESTINGS = 16;
 
 export class VestingSchedule {
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public token_count: BN | undefined; // 8
   @field({ type: "u8" })
   public vesting_count: number | undefined; // 1
@@ -350,7 +351,7 @@ export class VestingTypeAccount {
   public is_initialized: boolean | undefined; //1
   @field({ type: VestingSchedule })
   public vesting_schedule: VestingSchedule | undefined; //409
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public locked_tokens_amount: BN | undefined; //8
   @field(PublicKeyCreator)
   public administrator: PublicKey | undefined; //32
@@ -379,9 +380,9 @@ export class VestingTypeAccount {
 export class VestingAccount {
   @field({ type: "u8" })
   public is_initialized: boolean | undefined; //1
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public total_tokens: BN | undefined; //8
-  @field({ type: "u64" })
+  @field(TokenCountCreator)
   public withdrawn_tokens: BN | undefined; //8
   @field(PublicKeyCreator)
   public token_account: PublicKey | undefined; //32
@@ -410,8 +411,8 @@ export class VestingAccount {
     schedule: VestingSchedule,
     now: number
   ): BN {
-    if (!this.total_tokens || !this.withdrawn_tokens)
-      throw Error("Deserialization error");
+    if (this.total_tokens === undefined || this.withdrawn_tokens === undefined)
+      throw Error("Deserialization error: VestingAccount.calculate_available_to_withdraw_amount");
 
     let unlocked_part = schedule.calculateUnlockedPart(new BN(now));
     const totalTokens = new BigNumber(this.total_tokens.toString());
