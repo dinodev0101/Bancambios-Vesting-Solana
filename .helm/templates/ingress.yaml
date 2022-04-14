@@ -23,7 +23,7 @@ metadata:
 spec:
   tls:
   - hosts:
-      - vesting.bx.app
+      - {{ .Values.host_url }}
     secretName: {{ .Values.project }}-{{ .Values.kind }}-{{ .Values.app_env }}-tls
   rules:
     - host: {{ .Values.host_url }}
