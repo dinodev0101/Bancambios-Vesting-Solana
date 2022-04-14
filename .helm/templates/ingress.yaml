@@ -61,7 +61,7 @@ metadata:
 spec:
   tls:
   - hosts:
-    - host: {{ .Values.host_url }}
+      - {{ .Values.host_url }}
     secretName: {{ .Values.project }}-{{ .Values.kind }}-{{ .Values.app_env }}-tls
   rules:
     - host: {{ .Values.host_url }}
