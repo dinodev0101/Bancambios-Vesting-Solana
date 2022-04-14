@@ -10,16 +10,23 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, PATCH, DELETE"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "15"
+    nginx.ingress.kubernetes.io/proxy-body-size: 250m
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "512k"
     # nginx.ingress.kubernetes.io/auth-type: "basic"
     # nginx.ingress.kubernetes.io/auth-secret: "basic-auth-02"
     # nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
 spec:
   tls:
   - hosts:
-      - {{ .Values.host }}
+      - {{ .Values.host_url }}
     secretName: {{ .Values.project }}-{{ .Values.kind }}-{{ .Values.app_env }}-tls
   rules:
-    - host: {{ .Values.host }}
+    - host: {{ .Values.host_url }}
       http:
         paths:
         - path: /
@@ -41,16 +48,23 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, PATCH, DELETE"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "15"
+    nginx.ingress.kubernetes.io/proxy-body-size: 250m
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "512k"
     nginx.ingress.kubernetes.io/auth-type: "basic"
     nginx.ingress.kubernetes.io/auth-secret: "basic-auth-02"
     nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
 spec:
   tls:
   - hosts:
-      - {{ .Values.host }}
+    - host: {{ .Values.host_url }}
     secretName: {{ .Values.project }}-{{ .Values.kind }}-{{ .Values.app_env }}-tls
   rules:
-    - host: {{ .Values.host }}
+    - host: {{ .Values.host_url }}
       http:
         paths:
         - path: /investor-registration
