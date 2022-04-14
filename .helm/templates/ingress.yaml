@@ -26,7 +26,7 @@ spec:
       - vesting.bx.app
     secretName: {{ .Values.project }}-{{ .Values.kind }}-{{ .Values.app_env }}-tls
   rules:
-    - host: vesting.bx.app
+    - host: {{ .Values.host_url }}
       http:
         paths:
         - path: /
