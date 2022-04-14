@@ -12,7 +12,7 @@ deployment:
   app_port: '80'
   probe_path: '/'
 
-host_url: 'vesting.bx.app'
+host_url: ''
 
 affinity:
   role: ''
