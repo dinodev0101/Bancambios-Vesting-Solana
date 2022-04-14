@@ -117,7 +117,7 @@ k8s-prod:
       --set deployment.container.image=$IMAGE_NAME
       --set affinity.role=worker
       --set affinity.environment=prod
-      --set host=$HOST_URL
+      --set host_url=$HOST_URL
       --namespace prod
       --debug
       --wait
