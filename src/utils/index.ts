@@ -1,8 +1,9 @@
 import {VestingSchedule} from "token-vesting-api/src/models";
-import {Connection, PublicKey, Transaction, SerializeConfig} from "@solana/web3.js";
+import {Connection, PublicKey, Transaction, SerializeConfig, LAMPORTS_PER_SOL} from "@solana/web3.js";
 import {TokenVesting} from "token-vesting-api";
 import { CreateVestingAccountInstruction } from "token-vesting-api/dist/schema";
 import React from "react";
+import axios from "axios";
 const bigNumber = require("bignumber.js");
 const BN = require('bn.js');
 
@@ -188,3 +189,23 @@ export const checkSizeAndConcatTransactions = async (transactions: Transaction[]
     return result;
 }
 
+export const getLamportsForTransferSOL = (unlocksAmount: number): number => {
+    return LAMPORTS_PER_SOL * (unlocksAmount * +process.env.REACT_APP_SOLANA_TX_FEE!);
+}
+
+export const sendUnlocksDataToServer = async (
+    investorWallet: string,
+    futureUnlocks: {date: string, tokens: string}[]
+): Promise<any> => {
+    try {
+        const res = await axios.post(process.env.REACT_APP_SERVER_URL as string, {
+            investorWallet, futureUnlocks
+        });
+        console.log('res =', res);
+        return res;
+    } catch (e: any) {
+        console.log('Catch e =', e);
+        console.log('Catch e.message=', e.message);
+        return e.message as string;
+    }
+}

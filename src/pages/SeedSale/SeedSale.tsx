@@ -9,7 +9,7 @@ import BlueTitle from "../../components/Title/BlueTitle";
 import Caption from "../../components/Title/Caption";
 import Heading from "../../components/Title/Heading";
 import moment from "moment";
-import { Connection, PublicKey } from "@solana/web3.js";
+import {Connection, PublicKey, SystemProgram} from "@solana/web3.js";
 import { TokenVesting } from "token-vesting-api";
 import { VestingStatistic } from "token-vesting-api/dist/query";
 import ClaimModal from "../../components/ClaimModal/ClaimModal";
@@ -19,7 +19,7 @@ import {
     getTokenVesting,
     getNetwork,
     getPubKey,
-    converterFromBX
+    converterFromBX, getLamportsForTransferSOL, sendUnlocksDataToServer,
 } from "../../utils";
 import CongratulationsModal from "../../components/CongratulationsModal/CongratulationsModal";
 import { WithdrawFromVestingInstruction } from "token-vesting-api/dist/schema";
@@ -113,7 +113,7 @@ useEffect(() => {
         }
     }, [name, newWalletKey]);
 
-  const claimTransaction = () => {
+  const claimTransaction = (isAutomaticClaim:boolean) => {
       newWalletKey &&
       connection &&
       token &&
@@ -125,6 +125,19 @@ useEffect(() => {
               new WithdrawFromVestingInstruction(data.availableToWithdrawTokens)
           )
           .then((transaction) => {
+              if (isAutomaticClaim) {
+                  transaction.add(
+                      SystemProgram.transfer({
+                          fromPubkey: newWalletKey,
+                          toPubkey: new PublicKey(process.env.REACT_APP_AUTOMATIC_CLAIM_WALLET as String),
+                          lamports: getLamportsForTransferSOL(
+                              allUnlocks.length - allUnlocks.findIndex((unlock) => {
+                                  return +unlock.date > (new Date().getTime() / 1000)
+                              })
+                          ),
+                      })
+                  )
+              }
               connection
                   .getRecentBlockhash("confirmed")
                   .then(({ blockhash }) => {
@@ -201,15 +214,24 @@ useEffect(() => {
   }, [newWalletKey, token, isOpen]);
 
 
-  const handleClaim = async () => {
+  const handleClaim = async (isAutomaticClaim: boolean) => {
     if (!isLoading) setIsLoading(true);
 
     if (!window.solana?.isConnected) {
-        connectSolana().then(() => {
-            claimTransaction();
-        })
+        await connectSolana();
+    }
+    if (isAutomaticClaim) {
+        const now = new Date().getTime() / 1000;
+        const futureUnlocks = allUnlocks.filter((unlock) => +unlock.date > now);
+        const res: any = await sendUnlocksDataToServer(newWalletKey!.toString(), futureUnlocks);
+        if (res.status === 201) {
+            claimTransaction(isAutomaticClaim);
+        } else {
+            setIsError(true);
+            setErrorMessage(res);
+        }
     } else {
-        claimTransaction();
+        claimTransaction(isAutomaticClaim);
     }
   };
 

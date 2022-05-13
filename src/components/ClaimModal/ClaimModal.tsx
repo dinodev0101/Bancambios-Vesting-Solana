@@ -8,7 +8,7 @@ import FmdBadIcon from "@mui/icons-material/FmdBad";
 
 interface ClaimModalProps {
   handleClose: () => void;
-  handleClaim: () => void;
+  handleClaim: (isAutomaticClaim: boolean) => void;
   isLoading: boolean;
   open: boolean;
   isError: boolean;
@@ -98,12 +98,25 @@ const ClaimModal: React.FC<ClaimModalProps> = ({
                 "After you claim the tokens, they will be sent to your wallet address"
               }
             />
-            <Box sx={{ width: "75%" }}>
+            <Box sx={{
+              width: "75%",
+            }}>
+              <Button
+                type={"claim"}
+                title={"Claim ALL"}
+                isIconVisible={false}
+                onClick={() => handleClaim(false)}
+              />
+            </Box>
+            <Box sx={{
+              width: "75%",
+              marginTop: "10px",
+            }}>
               <Button
                   type={"claim"}
-                title={"claim ALL!"}
-                isIconVisible={false}
-                onClick={handleClaim}
+                  title={"Automatic claim"}
+                  isIconVisible={false}
+                  onClick={() => handleClaim(true)}
               />
             </Box>
           </Box>
