@@ -4,6 +4,8 @@ import { BinaryReader, BinaryWriter } from "@solvei/borsh/binary";
 import BigNumber from "bignumber.js";
 import BN from "bn.js";
 
+exports.Buffer = Buffer;
+
 const PublicKeyCreator = {
   serialize: (value: PublicKey, writer: BinaryWriter) => {
     writer.writeU256(new BN(value.encode(), 32, "be"));
