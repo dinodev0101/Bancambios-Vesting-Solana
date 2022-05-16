@@ -5,10 +5,10 @@ app_env: ''   # branch on git
 namespace: '' # namespase on k8s
 
 deployment:
-  replicas: 3
+  replicas: 1
   container:
     image: ''
-  maxSurge: 3
+  maxSurge: 1
   app_port: '80'
   probe_path: '/'
 
@@ -19,5 +19,5 @@ affinity:
   environment: ''
 
 podautoscaler:
-  minReplicas: 3
-  maxReplicas: 5
+  minReplicas: 1
+  maxReplicas: 3
